@@ -36,7 +36,8 @@ website/src/
 │   ├── useFontsReady.ts    gates reveals until local fonts are loaded
 │   └── useScrollSpy.ts     docs sidebar scroll-spy + slug/text helpers
 ├── components/
-│   ├── SiteHeader.tsx      pill nav (sliding indicator), menu btn, repo icons
+│   ├── SiteHeader.tsx      pill nav (sliding indicator), menu btn, repo icons;
+│   │                       scroll behavior via headroom.js
 │   ├── GradientBackground.tsx  drifting gradient blobs + noise grain
 │   ├── Markdown.tsx        custom react-markdown components (.md styling)
 │   └── Icons.tsx           inline SVG icons (currentColor)

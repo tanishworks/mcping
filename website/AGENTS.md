@@ -72,15 +72,24 @@ package load hero/cards/docs. Layout rules:
 
 ### Header behavior
 
-`SiteHeader` hides on scroll-down and reappears on scroll-up or pointer-at
-reveal zone; the pill nav is centered with an animated sliding indicator measured
+Scroll direction awareness is **headroom.js** (`npm i headroom.js`), not
+hand-rolled: it runs on the outer `.site-headroom` wrapper div (a plain
+element React never re-renders, so headroom's class list can't be clobbered)
+and toggles `site-headroom--pinned/--unpinned/…` classes; CSS owns the
+transforms — tucked up while scrolling down, dropped from the top on
+scroll-up (`offset: 90`, `tolerance: 6`). `onPin` replays the hamburger
+pop-out. The pill nav is centered with an animated sliding indicator measured
 from real DOM geometry (re-measure after `useFontsReady()` / resize — keep
-that wiring when touching it). Below **960px** (the same breakpoint where the
-docs sidebar becomes a drawer) the whole bar docks to the **bottom edge**
-for thumb navigation: the reveal zone becomes the bottom edge, hidden state
-slides down (`translateY(150%)`), `body` gets bottom padding for clearance,
-and `viewport-fit=cover` + `env(safe-area-inset-bottom)` keep it clear of the
-home indicator. Keep these paired when changing either file.
+that wiring when touching it).
+
+Below **960px** (the same breakpoint where the docs sidebar becomes a
+drawer) the whole bar docks to the **bottom edge** for thumb navigation: the
+reveal zone becomes the bottom edge (`headroomRef.current?.pin()` via
+pointer zone), the unpinned state slides down (`translateY(150%)`), `body`
+gets bottom padding for clearance, and `viewport-fit=cover` +
+`env(safe-area-inset-bottom)` keep it clear of the home indicator. The pill
+itself must keep only its theme background — no extra surfaces/shadows; the
+repo icon links live in their own solid pill at the right edge.
 
 ### Docs page `/docs`
 
