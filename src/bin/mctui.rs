@@ -6,7 +6,7 @@
 use std::collections::VecDeque;
 use std::io::stdout;
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::{mpsc, Arc};
+use std::sync::{Arc, mpsc};
 use std::thread;
 use std::time::{Duration, Instant};
 
@@ -15,15 +15,15 @@ use clap::Parser;
 use crossterm::event::{self, Event, KeyCode, KeyEventKind, KeyModifiers};
 use crossterm::execute;
 use crossterm::terminal::{
-    disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen,
+    EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode,
 };
+use ratatui::Terminal;
 use ratatui::backend::CrosstermBackend;
 use ratatui::layout::{Constraint, Layout};
 use ratatui::style::{Color, Modifier, Style, Stylize};
 use ratatui::symbols;
 use ratatui::text::{Line, Span};
 use ratatui::widgets::{Axis, Block, Chart, Dataset, Gauge, GraphType, Paragraph};
-use ratatui::Terminal;
 
 use mcping::addr::ServerAddr;
 use mcping::protocol;
@@ -48,8 +48,13 @@ struct Args {
 }
 
 enum PollUpdate {
-    Online { status: ServerStatus, latency: Option<Duration> },
-    Offline { reason: String },
+    Online {
+        status: ServerStatus,
+        latency: Option<Duration>,
+    },
+    Offline {
+        reason: String,
+    },
 }
 
 fn main() -> anyhow::Result<()> {
@@ -74,7 +79,9 @@ fn main() -> anyhow::Result<()> {
                         status: result.status,
                         latency: result.latency,
                     },
-                    Err(e) => PollUpdate::Offline { reason: e.to_string() },
+                    Err(e) => PollUpdate::Offline {
+                        reason: e.to_string(),
+                    },
                 };
 
                 if tx.send(update).is_err() {
@@ -105,19 +112,16 @@ fn main() -> anyhow::Result<()> {
             app.apply(update);
         }
 
-        if event::poll(Duration::from_millis(200))? {
-            if let Event::Key(key) = event::read()? {
-                if key.kind != KeyEventKind::Press {
-                    continue;
-                }
-
-                match key.code {
-                    KeyCode::Char('q') | KeyCode::Esc => break,
-                    KeyCode::Char('c') if key.modifiers.contains(KeyModifiers::CONTROL) => break,
-                    KeyCode::Down | KeyCode::Char('j') => app.scroll = app.scroll.saturating_add(1),
-                    KeyCode::Up | KeyCode::Char('k') => app.scroll = app.scroll.saturating_sub(1),
-                    _ => {}
-                }
+        if event::poll(Duration::from_millis(200))?
+            && let Event::Key(key) = event::read()?
+            && key.kind == KeyEventKind::Press
+        {
+            match key.code {
+                KeyCode::Char('q') | KeyCode::Esc => break,
+                KeyCode::Char('c') if key.modifiers.contains(KeyModifiers::CONTROL) => break,
+                KeyCode::Down | KeyCode::Char('j') => app.scroll = app.scroll.saturating_add(1),
+                KeyCode::Up | KeyCode::Char('k') => app.scroll = app.scroll.saturating_sub(1),
+                _ => {}
             }
         }
     }
@@ -229,16 +233,21 @@ impl App {
         let motd = self.status.as_ref().map(|s| s.motd()).unwrap_or_default();
 
         for line in motd.lines().take(2) {
-            lines.push(Line::from(Span::styled(line.to_string(), Style::new().cyan())));
+            lines.push(Line::from(Span::styled(
+                line.to_string(),
+                Style::new().cyan(),
+            )));
         }
 
-        if let Some(status) = &self.status {
-            if let Some(version) = &status.version {
-                lines.push(Line::from(Span::styled(
-                    format!("{} (protocol {})", version.name, version.protocol),
-                    Style::new().dim(),
-                )));
-            }
+        if let Some(version) = self
+            .status
+            .as_ref()
+            .and_then(|status| status.version.as_ref())
+        {
+            lines.push(Line::from(Span::styled(
+                format!("{} (protocol {})", version.name, version.protocol),
+                Style::new().dim(),
+            )));
         }
 
         let block = Block::bordered().title(format!(" {} ", self.addr));
@@ -260,11 +269,7 @@ impl App {
 
         let gauge = Gauge::default()
             .block(Block::bordered().title(" players "))
-            .gauge_style(Style::new().fg(if offline {
-                Color::Red
-            } else {
-                Color::Green
-            }))
+            .gauge_style(Style::new().fg(if offline { Color::Red } else { Color::Green }))
             .percent(fill.min(100) as u16)
             .label(Span::from(format!("{online}/{max}")));
 
@@ -295,7 +300,10 @@ impl App {
             lines.push(Line::from(Span::styled("polling…", Style::new().dim())));
         }
 
-        frame.render_widget(Paragraph::new(lines).block(Block::bordered().title(" ping ")), stats[1]);
+        frame.render_widget(
+            Paragraph::new(lines).block(Block::bordered().title(" ping ")),
+            stats[1],
+        );
     }
 
     fn draw_players(&mut self, frame: &mut ratatui::Frame, area: ratatui::layout::Rect) {
@@ -312,7 +320,10 @@ impl App {
                 )));
             }
             Some(names) if names.is_empty() => {
-                lines.push(Line::from(Span::styled("nobody is online", Style::new().dim())));
+                lines.push(Line::from(Span::styled(
+                    "nobody is online",
+                    Style::new().dim(),
+                )));
             }
             Some(names) => {
                 let online = self
@@ -335,9 +346,7 @@ impl App {
 
         let block = Block::bordered().title(title);
         frame.render_widget(
-            Paragraph::new(lines)
-                .block(block)
-                .scroll((self.scroll, 0)),
+            Paragraph::new(lines).block(block).scroll((self.scroll, 0)),
             area,
         );
     }
@@ -350,11 +359,7 @@ impl App {
             .filter_map(|(i, entry)| entry.map(|ms| (i as f64, ms as f64)))
             .collect();
 
-        let y_max = points
-            .iter()
-            .map(|(_, y)| *y)
-            .fold(1.0f64, f64::max)
-            * 1.2;
+        let y_max = points.iter().map(|(_, y)| *y).fold(1.0f64, f64::max) * 1.2;
 
         let dataset = Dataset::default()
             .name("ping")
@@ -507,4 +512,3 @@ mod tests {
         assert!(screen.contains("Steve"));
     }
 }
-

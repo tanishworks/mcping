@@ -115,7 +115,12 @@ pub fn step(state: &mut WatchState, poll: PollOutcome) -> Vec<WatchEvent> {
     let mut events = Vec::new();
 
     match poll {
-        PollOutcome::Online { players, online, max, latency_ms } => {
+        PollOutcome::Online {
+            players,
+            online,
+            max,
+            latency_ms,
+        } => {
             let recovered = state.online == Some(false);
             state.online = Some(true);
             state.offline_streak = 0;
@@ -123,7 +128,11 @@ pub fn step(state: &mut WatchState, poll: PollOutcome) -> Vec<WatchEvent> {
             // Baseline poll and recovery from offline both rebaseline the
             // player list silently below.
             if recovered {
-                events.push(WatchEvent::ServerOnline { online, max, latency_ms });
+                events.push(WatchEvent::ServerOnline {
+                    online,
+                    max,
+                    latency_ms,
+                });
             }
 
             let current: Option<PlayerMap> = players.map(|names| {
@@ -255,16 +264,15 @@ pub fn run(config: &WatchConfig) -> anyhow::Result<()> {
             next_tick = now + config.interval;
         }
 
-        loop {
-            let timeout = next_tick.saturating_duration_since(Instant::now());
+        // Sleep until the next tick, waking immediately on Ctrl-C.
+        let timeout = next_tick.saturating_duration_since(Instant::now());
 
-            match ctrlc_rx.recv_timeout(timeout) {
-                Ok(()) | Err(mpsc::RecvTimeoutError::Disconnected) => {
-                    println!("[{}] {}", timestamp(), style::dim("stopped watching"));
-                    return Ok(());
-                }
-                Err(mpsc::RecvTimeoutError::Timeout) => break,
+        match ctrlc_rx.recv_timeout(timeout) {
+            Ok(()) | Err(mpsc::RecvTimeoutError::Disconnected) => {
+                println!("[{}] {}", timestamp(), style::dim("stopped watching"));
+                return Ok(());
             }
+            Err(mpsc::RecvTimeoutError::Timeout) => {}
         }
     }
 }
@@ -277,11 +285,18 @@ fn poll(addr: &ServerAddr) -> PollOutcome {
             max: result.status.players.max,
             latency_ms: result.latency.map(|d| d.as_millis()),
         },
-        Err(e) => PollOutcome::Offline { reason: e.to_string() },
+        Err(e) => PollOutcome::Offline {
+            reason: e.to_string(),
+        },
     }
 }
 
-fn print_baseline(addr: &ServerAddr, state: &WatchState, outcome: &PollOutcome, interval: Duration) {
+fn print_baseline(
+    addr: &ServerAddr,
+    state: &WatchState,
+    outcome: &PollOutcome,
+    interval: Duration,
+) {
     let head = format!(
         "watching {} every {}s — Ctrl-C to stop",
         style::bold(&addr.to_string()),
@@ -292,7 +307,10 @@ fn print_baseline(addr: &ServerAddr, state: &WatchState, outcome: &PollOutcome, 
         (
             Some(true),
             PollOutcome::Online {
-                online, max, latency_ms, ..
+                online,
+                max,
+                latency_ms,
+                ..
             },
         ) => format!(
             "currently online ({}/{} players, ping {})",
@@ -308,7 +326,11 @@ fn print_baseline(addr: &ServerAddr, state: &WatchState, outcome: &PollOutcome, 
 
 fn render_event(addr: &ServerAddr, event: &WatchEvent, server_mode: bool) {
     let line = match event {
-        WatchEvent::ServerOnline { online, max, latency_ms } => {
+        WatchEvent::ServerOnline {
+            online,
+            max,
+            latency_ms,
+        } => {
             if server_mode {
                 style::green(&format!(
                     "▲ {addr} is online — {}/{} players, ping {}",
@@ -336,8 +358,15 @@ fn render_event(addr: &ServerAddr, event: &WatchEvent, server_mode: bool) {
 
 fn desktop_body(addr: &ServerAddr, event: &WatchEvent) -> String {
     match event {
-        WatchEvent::ServerOnline { online, max, latency_ms } => {
-            format!("{addr} is online — {online}/{max} players, ping {}", latency_text(*latency_ms))
+        WatchEvent::ServerOnline {
+            online,
+            max,
+            latency_ms,
+        } => {
+            format!(
+                "{addr} is online — {online}/{max} players, ping {}",
+                latency_text(*latency_ms)
+            )
         }
         WatchEvent::ServerOffline { reason } => format!("{addr} is offline — {reason}"),
         WatchEvent::PlayerJoined { name } => format!("{name} joined {addr}"),
@@ -412,7 +441,14 @@ mod tests {
         assert_eq!(state.server_is_online(), Some(false));
 
         let events = step(&mut state, online(&[]));
-        assert_eq!(events, vec![WatchEvent::ServerOnline { online: 0, max: 100, latency_ms: Some(35) }]);
+        assert_eq!(
+            events,
+            vec![WatchEvent::ServerOnline {
+                online: 0,
+                max: 100,
+                latency_ms: Some(35)
+            }]
+        );
     }
 
     #[test]
@@ -438,12 +474,17 @@ mod tests {
         let events = step(&mut state, offline());
         assert_eq!(
             events,
-            vec![WatchEvent::ServerOffline { reason: "connection refused".to_string() }]
+            vec![WatchEvent::ServerOffline {
+                reason: "connection refused".to_string()
+            }]
         );
         assert_eq!(state.server_is_online(), Some(false));
 
         let events = step(&mut state, online(&[]));
-        assert!(matches!(events.as_slice(), [WatchEvent::ServerOnline { .. }]));
+        assert!(matches!(
+            events.as_slice(),
+            [WatchEvent::ServerOnline { .. }]
+        ));
     }
 
     #[test]
@@ -454,7 +495,10 @@ mod tests {
         let events = step(&mut state, online(&["Alex", "Hero"]));
         assert_eq!(
             names(&events),
-            vec![("join".to_string(), "Hero".to_string()), ("left".to_string(), "Steve".to_string())]
+            vec![
+                ("join".to_string(), "Hero".to_string()),
+                ("left".to_string(), "Steve".to_string())
+            ]
         );
     }
 
@@ -466,7 +510,10 @@ mod tests {
         let events = step(&mut state, online(&["Hero"]));
         assert_eq!(
             names(&events),
-            vec![("join".to_string(), "Hero".to_string()), ("left".to_string(), "Steve".to_string())]
+            vec![
+                ("join".to_string(), "Hero".to_string()),
+                ("left".to_string(), "Steve".to_string())
+            ]
         );
     }
 
@@ -486,7 +533,10 @@ mod tests {
 
         step(&mut state, offline());
         let events = step(&mut state, offline()); // marked offline now
-        assert!(matches!(events.as_slice(), [WatchEvent::ServerOffline { .. }]));
+        assert!(matches!(
+            events.as_slice(),
+            [WatchEvent::ServerOffline { .. }]
+        ));
 
         // Comes back with the same players: only the online event, no joins.
         let events = step(&mut state, online(&["Steve", "Alex"]));
@@ -508,7 +558,10 @@ mod tests {
 
         // From the new baseline normal diffing resumes.
         let events = step(&mut state, online(&["Hero", "jeb_", "Notch"]));
-        assert_eq!(names(&events), vec![("join".to_string(), "Notch".to_string())]);
+        assert_eq!(
+            names(&events),
+            vec![("join".to_string(), "Notch".to_string())]
+        );
     }
 
     #[test]
@@ -517,41 +570,71 @@ mod tests {
         step(&mut state, online(&["Steve"]));
 
         let events = step(&mut state, online(&["Steve", "Steve", "Alex"]));
-        assert_eq!(names(&events), vec![("join".to_string(), "Alex".to_string())]);
+        assert_eq!(
+            names(&events),
+            vec![("join".to_string(), "Alex".to_string())]
+        );
     }
 
     #[test]
     fn player_filter_is_case_insensitive() {
-        let filter = WatchFilter { user: Some("Hero".to_string()), ..Default::default() };
+        let filter = WatchFilter {
+            user: Some("Hero".to_string()),
+            ..Default::default()
+        };
 
-        assert!(filter.is_relevant(&WatchEvent::PlayerJoined { name: "hero".to_string() }));
-        assert!(!filter.is_relevant(&WatchEvent::PlayerJoined { name: "Alex".to_string() }));
-        assert!(!filter.is_relevant(&WatchEvent::PlayerLeft { name: "hero".to_string() })); // leave not enabled
+        assert!(filter.is_relevant(&WatchEvent::PlayerJoined {
+            name: "hero".to_string()
+        }));
+        assert!(!filter.is_relevant(&WatchEvent::PlayerJoined {
+            name: "Alex".to_string()
+        }));
+        assert!(!filter.is_relevant(&WatchEvent::PlayerLeft {
+            name: "hero".to_string()
+        })); // leave not enabled
     }
 
     #[test]
     fn leave_alerts_are_toggleable() {
-        let join_only = WatchFilter { user: Some("Hero".to_string()), ..Default::default() };
+        let join_only = WatchFilter {
+            user: Some("Hero".to_string()),
+            ..Default::default()
+        };
         let with_leaves = WatchFilter {
             user: Some("Hero".to_string()),
             alert_leave: true,
             ..Default::default()
         };
 
-        let leave = WatchEvent::PlayerLeft { name: "Hero".to_string() };
+        let leave = WatchEvent::PlayerLeft {
+            name: "Hero".to_string(),
+        };
         assert!(!join_only.is_relevant(&leave));
         assert!(with_leaves.is_relevant(&leave));
     }
 
     #[test]
     fn server_filter_gates_server_events() {
-        let server = WatchFilter { alert_server: true, ..Default::default() };
-        let player = WatchFilter { user: None, alert_leave: true, ..Default::default() };
+        let server = WatchFilter {
+            alert_server: true,
+            ..Default::default()
+        };
+        let player = WatchFilter {
+            user: None,
+            alert_leave: true,
+            ..Default::default()
+        };
 
-        let online = WatchEvent::ServerOnline { online: 1, max: 2, latency_ms: None };
+        let online = WatchEvent::ServerOnline {
+            online: 1,
+            max: 2,
+            latency_ms: None,
+        };
         assert!(server.is_relevant(&online));
         assert!(!player.is_relevant(&online));
-        assert!(player.is_relevant(&WatchEvent::PlayerJoined { name: "anyone".to_string() }));
+        assert!(player.is_relevant(&WatchEvent::PlayerJoined {
+            name: "anyone".to_string()
+        }));
     }
 
     #[test]
@@ -559,8 +642,23 @@ mod tests {
         let mut state = WatchState::default();
         step(&mut state, online(&[]));
 
-        step(&mut state, PollOutcome::Offline { reason: "timed out".to_string() });
-        let events = step(&mut state, PollOutcome::Offline { reason: "timed out".to_string() });
-        assert_eq!(events, vec![WatchEvent::ServerOffline { reason: "timed out".to_string() }]);
+        step(
+            &mut state,
+            PollOutcome::Offline {
+                reason: "timed out".to_string(),
+            },
+        );
+        let events = step(
+            &mut state,
+            PollOutcome::Offline {
+                reason: "timed out".to_string(),
+            },
+        );
+        assert_eq!(
+            events,
+            vec![WatchEvent::ServerOffline {
+                reason: "timed out".to_string()
+            }]
+        );
     }
 }

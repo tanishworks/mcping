@@ -5,10 +5,10 @@ use std::io::{self, Read, Write};
 use std::net::TcpStream;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
-use anyhow::{anyhow, Context};
+use anyhow::{Context, anyhow};
 
 use crate::addr::ServerAddr;
-use crate::status::{parse_status, ServerStatus};
+use crate::status::{ServerStatus, parse_status};
 
 /// Protocol version announced in the handshake. Servers respond to status
 /// pings regardless of this value; 767 = 1.21.
@@ -122,12 +122,16 @@ fn connect(addr: &ServerAddr) -> anyhow::Result<TcpStream> {
 
     let (socket_addr, e) = last_error.expect("at least one connect attempt");
     let reason = match e.kind() {
-        io::ErrorKind::ConnectionRefused => "connection refused (is the server online?)".to_string(),
+        io::ErrorKind::ConnectionRefused => {
+            "connection refused (is the server online?)".to_string()
+        }
         io::ErrorKind::TimedOut => "connection timed out".to_string(),
         _ => e.to_string(),
     };
 
-    Err(anyhow!("could not connect to {addr} ({socket_addr}): {reason}"))
+    Err(anyhow!(
+        "could not connect to {addr} ({socket_addr}): {reason}"
+    ))
 }
 
 fn send_handshake(stream: &mut TcpStream, addr: &ServerAddr) -> anyhow::Result<()> {
@@ -144,7 +148,9 @@ fn send_handshake(stream: &mut TcpStream, addr: &ServerAddr) -> anyhow::Result<(
     write_varint(handshake.len() as i32, &mut packet);
     packet.extend_from_slice(&handshake);
 
-    stream.write_all(&packet).context("failed to send handshake")
+    stream
+        .write_all(&packet)
+        .context("failed to send handshake")
 }
 
 fn send_status_request(stream: &mut TcpStream) -> anyhow::Result<()> {
@@ -174,7 +180,9 @@ fn read_status_response(stream: &mut TcpStream) -> anyhow::Result<ServerStatus> 
     }
 
     let mut json = vec![0u8; json_length as usize];
-    stream.read_exact(&mut json).context("truncated status response")?;
+    stream
+        .read_exact(&mut json)
+        .context("truncated status response")?;
 
     let json = String::from_utf8(json).context("status response is not valid UTF-8")?;
 

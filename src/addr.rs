@@ -19,7 +19,10 @@ pub struct ServerAddr {
 
 impl ServerAddr {
     pub fn new(host: impl Into<String>, port: u16) -> Self {
-        Self { host: host.into(), port }
+        Self {
+            host: host.into(),
+            port,
+        }
     }
 }
 
@@ -85,7 +88,8 @@ impl FromStr for ServerAddr {
 }
 
 fn parse_port(p: &str) -> Result<u16, ParseAddrError> {
-    p.parse::<u16>().map_err(|_| err(&format!("invalid port '{p}'")))
+    p.parse::<u16>()
+        .map_err(|_| err(&format!("invalid port '{p}'")))
 }
 
 impl fmt::Display for ServerAddr {
