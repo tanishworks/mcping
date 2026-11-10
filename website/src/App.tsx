@@ -60,7 +60,7 @@ function Shell() {
 export default function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <ScrollToTop />
         <Shell />
       </BrowserRouter>

@@ -5,9 +5,10 @@ minimal, monochrome (pure black / pure white) site built with **Vite +
 React + TypeScript**.
 
 - Live URL: https://tanishworks.github.io/mcping/
-- Deployed to the `gh-pages` branch via
-  [`.github/workflows/website.yml`](../.github/workflows/website.yml) (GitHub
-  Pages) on every push to `main`.
+- Served from the **`gh-pages` branch** (GitHub Pages, branch-based):
+  `.github/workflows/website.yml` builds on every push to `main` and pushes
+  `website/dist` into `gh-pages`; `npm run deploy` does the same locally via
+  the `gh-pages` npm package.
 
 ## Quick start
 
@@ -17,6 +18,7 @@ npm install
 npm run dev        # dev server (matches the /mcping/ base path too)
 npm run build      # type-check + build + produce dist/404.html
 npm run preview    # serve the production build locally
+npm run deploy     # build + push dist/ to the gh-pages branch
 ```
 
 ## Agent notes
@@ -83,7 +85,9 @@ feature cards and the terminal sample.
 
 ## Deployment
 
-`npm run build` output is uploaded to the `gh-pages` branch by the automated
-workflow on every push to `main`. To trigger a deploy manually, dispatch the
-`website` workflow from GitHub.
+The `website` GitHub Actions workflow builds the site on every push to
+`main` and publishes `dist/` to the **`gh-pages` branch**
+(`peaceiris/actions-gh-pages`). To publish manually, run `npm run deploy`
+(build + `gh-pages` push). GitHub Pages must be configured with
+**Source: Deploy from a branch → gh-pages / root**.
 

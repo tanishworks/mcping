@@ -14,12 +14,6 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: true
 
 jobs:
   build:
@@ -41,19 +35,14 @@ jobs:
         run: npm run build
         working-directory: website
 
-      - name: Upload Pages artifact
+      # Push website/dist into the gh-pages branch, which GitHub Pages serves
+      # (branch-based deployment; the gh-pages npm package does the same thing
+      # locally via `npm run deploy`). .nojekyll is added so Pages skips
+      # Jekyll processing.
+      - name: Publish to gh-pages branch
         if: github.ref == 'refs/heads/main'
-        uses: actions/upload-pages-artifact@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: website/dist
-
-  deploy:
-    if: github.ref == 'refs/heads/main'
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: website/dist
+          commit_message: 'chore(website): publish gh-pages [skip ci]'

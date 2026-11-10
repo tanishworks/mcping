@@ -7,9 +7,14 @@ mcping site. Read this before changing anything.
 
 - Vite + React 19 + TypeScript SPA, two pages: `/` (home) and `/docs`.
 - Lives in `website/` inside the mcping repo; deployed to GitHub Pages at
-  https://tanishworks.github.io/mcping/ by
-  [`.github/workflows/website.yml`](../.github/workflows/website.yml).
+  https://tanishworks.github.io/mcping/ from the `gh-pages` branch (CI pushes
+  `website/dist` there via
+  [`.github/workflows/website.yml`](../.github/workflows/website.yml);
+  `npm run deploy` does the same locally with the `gh-pages` package).
 - Vite `base` is `/mcping/`; do not change it unless the repo moves.
+  `BrowserRouter` must keep its matching `basename={import.meta.env.BASE_URL}`
+  — without it, reloading a deep link like `/mcping/docs` no longer matches
+  any route and bounces to the site root.
 - The build copies `dist/index.html` → `dist/404.html` for SPA deep links.
 
 ## Rules
