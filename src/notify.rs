@@ -27,6 +27,8 @@ pub fn desktop(title: &str, body: &str) {
     }
 }
 
+/// Escape a string for embedding in a double-quoted AppleScript literal.
+#[cfg(target_os = "macos")]
 fn escape_applescript(text: &str) -> String {
     text.replace('\\', "\\\\").replace('"', "\\\"")
 }

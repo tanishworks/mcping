@@ -31,3 +31,22 @@ jobs:
 
       - name: Build
         run: cargo build --release
+
+  ci-macos:
+    # Catches platform-cfg mistakes (e.g. macOS-only code) that the Linux
+    # runner can't see.
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Clippy
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+      - name: Test
+        run: cargo test
