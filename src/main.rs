@@ -1,8 +1,10 @@
 use std::process::ExitCode;
+use std::time::Duration;
 
 use clap::{Parser, Subcommand};
 
 use mcping::addr::ServerAddr;
+use mcping::watch::{WatchConfig, WatchFilter};
 use mcping::{protocol, style};
 
 #[derive(Parser, Debug)]
@@ -28,6 +30,38 @@ enum Command {
         /// Server address, e.g. alwto.net or localhost:25565
         addr: ServerAddr,
     },
+    /// Watch a server and notify when things change
+    Watch {
+        #[command(subcommand)]
+        mode: WatchMode,
+
+        /// Seconds between polls
+        #[arg(short, long, default_value_t = 10, global = true)]
+        interval: u64,
+
+        /// Disable desktop notifications (terminal output only)
+        #[arg(long, global = true)]
+        no_notify: bool,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+enum WatchMode {
+    /// Notify when the server comes online or goes offline
+    Server {
+        /// Server address, e.g. alwto.net or localhost:25565
+        addr: ServerAddr,
+    },
+    /// Notify when a player joins, and with --leave, when they leave
+    Player {
+        /// Server address, e.g. alwto.net or localhost:25565
+        addr: ServerAddr,
+        /// Only watch this player (case-insensitive); omit for any player
+        user: Option<String>,
+        /// Also notify when a watched player leaves
+        #[arg(long)]
+        leave: bool,
+    },
 }
 
 fn main() -> ExitCode {
@@ -36,6 +70,7 @@ fn main() -> ExitCode {
     match cli.command {
         Command::Status { addr } => cmd_status(&addr),
         Command::Ping { addr } => cmd_ping(&addr),
+        Command::Watch { mode, interval, no_notify } => cmd_watch(mode, interval, !no_notify),
     }
 }
 
@@ -115,6 +150,49 @@ fn cmd_ping(addr: &ServerAddr) -> ExitCode {
             }
             ExitCode::SUCCESS
         }
+        Err(error) => {
+            eprintln!("{} {error:#}", style::red("error:"));
+            ExitCode::FAILURE
+        }
+    }
+}
+
+fn cmd_watch(mode: WatchMode, interval: u64, desktop_notifications: bool) -> ExitCode {
+    if interval == 0 {
+        eprintln!("{} interval must be at least 1 second", style::red("error:"));
+        return ExitCode::FAILURE;
+    }
+
+    let (addr, filter) = match mode {
+        WatchMode::Server { addr } => (
+            addr,
+            WatchFilter { alert_server: true, ..WatchFilter::default() },
+        ),
+        WatchMode::Player { addr, user, leave } => {
+            let user = match user {
+                Some(user) if user.trim().is_empty() => {
+                    eprintln!("{} watched player name cannot be empty", style::red("error:"));
+                    return ExitCode::FAILURE;
+                }
+                user => user,
+            };
+
+            (
+                addr,
+                WatchFilter { user, alert_leave: leave, alert_server: false },
+            )
+        }
+    };
+
+    let config = WatchConfig {
+        addr,
+        interval: Duration::from_secs(interval),
+        filter,
+        desktop_notifications,
+    };
+
+    match mcping::watch::run(&config) {
+        Ok(()) => ExitCode::SUCCESS,
         Err(error) => {
             eprintln!("{} {error:#}", style::red("error:"));
             ExitCode::FAILURE
