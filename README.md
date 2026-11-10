@@ -50,6 +50,15 @@ Watch flags: `--interval <secs>` (default 10), `--no-notify` (terminal only).
 Events print to the terminal (timestamped, colored, with a bell) **and** fire a
 desktop notification. Ctrl-C stops watching.
 
+## Website
+
+The project has a website (source in [`website/`](website/), docs for humans
+in [`website/README.md`](website/README.md) and for agents in
+[`website/AGENTS.md`](website/AGENTS.md)). It is deployed to GitHub Pages at
+**https://tanishworks.github.io/mcping/** from the `gh-pages` branch by the
+`website` GitHub Actions workflow on every push to `main`. The on-site CLI
+documentation mirrors this README.
+
 ## TUI
 
 ```sh
