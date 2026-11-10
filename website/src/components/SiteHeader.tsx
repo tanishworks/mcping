@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import Headroom from 'headroom.js';
 import { Link, useLocation } from 'react-router-dom';
 import { useFontsReady } from '../hooks/useFontsReady';
+import { useHideOnScroll } from '../hooks/useHideOnScroll';
 import { GitHubIcon, IssueIcon, MenuIcon, ReleasesIcon } from './Icons';
 
 const REPO_URL = 'https://github.com/tanishworks/mcping';
@@ -11,28 +11,15 @@ const links = [
   { to: '/docs', label: 'docs' },
 ];
 
-/* Scroll-direction awareness comes from headroom.js (offset in px before the
- * bar may hide, tolerance in px before a direction change counts). The bar
- * tucks up while scrolling down and drops back from the top on scroll-up;
- * CSS owns the transforms (see .site-headroom rules in global.css). */
-const HEADROOM_OFFSET = 90;
-const HEADROOM_TOLERANCE = 6;
+/* Hide/show tuning: the bar may only hide once the page is scrolled past
+ * `threshold` px, and `tolerance` px of sub-threshold jitter never flips it. */
+const HIDE_THRESHOLD_PX = 90;
+const HIDE_TOLERANCE_PX = 6;
 
 /* Same breakpoint as the docs-drawer CSS: below it the bar docks to the
  * bottom edge, so the hover/reveal zone is the bottom edge. */
 const BOTTOM_BAR_QUERY = '(max-width: 959px)';
 const HOVER_ZONE_PX = 72;
-
-const HEADROOM_CLASSES = {
-  initial: 'site-headroom',
-  pinned: 'site-headroom--pinned',
-  unpinned: 'site-headroom--unpinned',
-  top: 'site-headroom--top',
-  notTop: 'site-headroom--not-top',
-  bottom: 'site-headroom--bottom',
-  notBottom: 'site-headroom--not-bottom',
-  frozen: 'site-headroom--frozen',
-};
 
 /**
  * Fixed header: a centered pill nav; on /docs the hamburger pops out of the
@@ -41,18 +28,21 @@ const HEADROOM_CLASSES = {
  * and screen position whether the button is there or not. Repo links sit in
  * a solid pill at the right edge.
  *
- * The bar itself is managed by headroom.js running on the outer
- * `.site-headroom` wrapper (never re-rendered by React, so headroom's class
- * list can't be clobbered). Every re-pin — initial mount included — replays
- * the hamburger pop-out.
+ * The bar itself is hidden/shown by `useHideOnScroll` (rAF-throttled scroll
+ * direction + hover-zone hold); the wrapper's class flips between the base
+ * class and `site-headroom--unpinned`. Every real reveal — initial mount
+ * included — replays the hamburger pop-out; hover-holds never do.
  */
 export function SiteHeader({ onToggleDocs }: { onToggleDocs?: () => void }) {
   const fontsReady = useFontsReady();
   const { pathname } = useLocation();
+  const { hidden, hold } = useHideOnScroll({
+    threshold: HIDE_THRESHOLD_PX,
+    tolerance: HIDE_TOLERANCE_PX,
+  });
 
-  // Outer bar wrapper (owns headroom's class list — static in React's eyes).
+  // Outer bar wrapper.
   const barRef = useRef<HTMLDivElement | null>(null);
-  const headroomRef = useRef<Headroom | null>(null);
 
   // Sliding indicator geometry.
   const navRef = useRef<HTMLElement | null>(null);
@@ -76,44 +66,37 @@ export function SiteHeader({ onToggleDocs }: { onToggleDocs?: () => void }) {
     return () => window.removeEventListener('resize', measure);
   }, [measure]);
 
-  // Hamburger pop-out replay; fired by headroom's onPin and re-pins.
+  // Hamburger pop-out replay: each real reveal (hidden → visible) pops it.
+  // Adjusting during render (the documented derived-state pattern) keeps
+  // effects free of setState; the initial mount pop comes from the JSX's
+  // `is-popping` class, so only later transitions bump the key here.
   const [popKey, setPopKey] = useState(0);
-  const replayPop = useCallback(() => setPopKey((key) => key + 1), []);
-
-  // headroom.js lifecycle: hide on scroll down, drop from the top on up.
-  useEffect(() => {
-    const bar = barRef.current;
-    if (!bar) return;
-    const headroom = new Headroom(bar, {
-      offset: HEADROOM_OFFSET,
-      tolerance: HEADROOM_TOLERANCE,
-      classes: HEADROOM_CLASSES,
-      onPin: replayPop,
-    });
-    headroom.init();
-    headroomRef.current = headroom;
-    return () => {
-      headroom.destroy();
-      headroomRef.current = null;
-    };
-  }, [replayPop]);
+  const [prevHidden, setPrevHidden] = useState(hidden);
+  if (prevHidden !== hidden) {
+    setPrevHidden(hidden);
+    if (!hidden) setPopKey((key) => key + 1);
+  }
 
   // Pointer reveal zones: top edge on the top bar, bottom edge on the
-  // bottom-docked (narrow-viewport) bar. Forcing `pin()` also replays the pop.
+  // bottom-docked (narrow-viewport) bar. Inside the zone the bar is revealed
+  // once and *held* visible — scrolling can't re-hide it while hovering.
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
       const bottomBar = window.matchMedia(BOTTOM_BAR_QUERY).matches;
       const inZone = bottomBar
         ? e.clientY >= window.innerHeight - HOVER_ZONE_PX
         : e.clientY <= HOVER_ZONE_PX;
-      if (inZone) headroomRef.current?.pin();
+      hold(inZone);
     };
     window.addEventListener('mousemove', onMove, { passive: true });
     return () => window.removeEventListener('mousemove', onMove);
-  }, []);
+  }, [hold]);
 
   return (
-    <div ref={barRef} className="site-headroom">
+    <div
+      ref={barRef}
+      className={`site-headroom${hidden ? ' site-headroom--unpinned' : ''}`}
+    >
       <header className="site-header">
         <div className="nav-cluster">
           {onToggleDocs && (
