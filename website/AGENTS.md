@@ -62,6 +62,16 @@ Spacing/type scale (hard rules, mirrors the tagg site):
   otherwise the reveal wrapper becomes the only grid child and the cards
   stack vertically.
 
+### Icons
+
+Favicons and the hero icon come from the repo's `icon/exportss/png/` exports —
+`website/public/favicon-32.png` (favicon), `website/public/apple-touch-icon.png`
+(home-screen icon) and `website/src/assets/icon.png` (landing hero) are all
+`sips`-downscaled from `icon/exportss/png/Icon-iOS-Dark-512@1x.png`; regenerate
+with `sips -z <size> <size> <source> --out <dest>` rather than hand-editing.
+The hero `<img>` must keep `data-ascii="fade"` and its intrinsic
+width/height attributes (no CLS).
+
 ### ascii-reveal
 
 Reveal effects (`AsciiReveal`, `AsciiSkeleton`) from the `ascii-reveal` npm

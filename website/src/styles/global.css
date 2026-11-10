@@ -335,6 +335,13 @@ a {
   text-align: center;
 }
 
+.hero__icon {
+  display: block;
+  width: clamp(4.5rem, 9vw, 5.5rem);
+  height: auto;
+  margin: 0 auto 1.25rem;
+}
+
 .hero__eyebrow {
   margin-bottom: 1.5rem;
   font-family: var(--font-mono);
@@ -356,7 +363,7 @@ a {
 
 .hero__tagline {
   max-width: 34rem;
-  margin: 0 auto 2.25rem;
+  margin: 0 auto 2rem;
   font-size: clamp(1rem, 2vw, 1.15rem);
   line-height: 1.75;
   color: var(--muted);
@@ -374,17 +381,20 @@ a {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  max-width: 40rem;
+  width: 100%;
+  max-width: 52rem;
   margin: 0 auto;
   padding: 0.75rem 0.875rem 0.75rem 1.25rem;
   border: 1px solid var(--hairline);
   border-radius: 999px;
   background: var(--bg);
-  box-shadow: 0 8px 24px -18px var(--shadow);
 }
 
 .install-pill__cmd {
   flex: 1;
+  /* Let the code element shrink below its nowrap content so the pill never
+   * outgrows the viewport; the overflow scrolls instead (scrollbar hidden). */
+  min-width: 0;
   overflow-x: auto;
   font-family: var(--font-mono);
   font-size: 0.8rem;
@@ -927,10 +937,6 @@ a {
 
   .section {
     padding: 1.75rem 1rem;
-  }
-
-  .install-pill {
-    border-radius: 1rem;
   }
 
   .icon-btn {

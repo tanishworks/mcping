@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { AsciiReveal, AsciiSkeleton } from 'ascii-reveal';
 import { useFontsReady } from '../hooks/useFontsReady';
 import { CheckIcon, CopyIcon } from '../components/Icons';
+import iconUrl from '../assets/icon.png';
 
 const REPO_URL = 'https://github.com/tanishworks/mcping';
 const RELEASES_URL = `${REPO_URL}/releases`;
@@ -85,6 +86,15 @@ export function Home() {
       {fontsReady ? (
         <section className="hero">
           <AsciiReveal preset="decode" duration="cinematic">
+            {/* App icon (asset carries its own rounded-square shape). */}
+            <img
+              className="hero__icon"
+              src={iconUrl}
+              alt=""
+              width={256}
+              height={256}
+              data-ascii="fade"
+            />
             <p className="hero__eyebrow" data-ascii="fade">
               minecraft · java edition · cli
             </p>
