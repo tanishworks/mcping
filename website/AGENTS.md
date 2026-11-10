@@ -73,9 +73,14 @@ package load hero/cards/docs. Layout rules:
 ### Header behavior
 
 `SiteHeader` hides on scroll-down and reappears on scroll-up or pointer-at
-top edge; the pill nav is centered with an animated sliding indicator measured
+reveal zone; the pill nav is centered with an animated sliding indicator measured
 from real DOM geometry (re-measure after `useFontsReady()` / resize — keep
-that wiring when touching it).
+that wiring when touching it). Below **960px** (the same breakpoint where the
+docs sidebar becomes a drawer) the whole bar docks to the **bottom edge**
+for thumb navigation: the reveal zone becomes the bottom edge, hidden state
+slides down (`translateY(150%)`), `body` gets bottom padding for clearance,
+and `viewport-fit=cover` + `env(safe-area-inset-bottom)` keep it clear of the
+home indicator. Keep these paired when changing either file.
 
 ### Docs page `/docs`
 

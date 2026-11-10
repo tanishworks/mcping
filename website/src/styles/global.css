@@ -873,6 +873,31 @@ a {
 /* Responsive                                                           */
 /* ------------------------------------------------------------------ */
 
+/* Thumb navigation: below the docs-drawer breakpoint the whole bar docks
+ * to the bottom of the screen. The pill stays centered, the hamburger keeps
+ * popping out of it, and the reveal zone moves to the bottom edge (see
+ * SiteHeader). Content clears the bar via body padding. */
+@media (max-width: 959px) {
+  body {
+    padding-bottom: 4.5rem;
+  }
+
+  .site-header {
+    top: auto;
+    bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+    padding: 0.75rem 1rem 0.25rem;
+  }
+
+  /* Hidden state slides off the bottom edge instead of the top one. */
+  .site-header--hidden {
+    transform: translateY(150%);
+  }
+
+  .site-header__side--right {
+    gap: 0.35rem;
+  }
+}
+
 @media (max-width: 640px) {
   .hero {
     padding: 4.5rem 1.5rem 2rem;
