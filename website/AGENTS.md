@@ -87,20 +87,21 @@ package load hero/cards/docs. Layout rules:
 
 ### Header behavior
 
-Scroll direction awareness is **headroom.js** (`npm i headroom.js`), not
-hand-rolled: it runs on the outer `.site-headroom` wrapper div (a plain
-element React never re-renders, so headroom's class list can't be clobbered)
-and toggles `site-headroom--pinned/--unpinned/…` classes; CSS owns the
-transforms — tucked up while scrolling down, dropped from the top on
-scroll-up (`offset: 90`, `tolerance: 6`). `onPin` replays the hamburger
-pop-out. The pill nav is centered with an animated sliding indicator measured
-from real DOM geometry (re-measure after `useFontsReady()` / resize — keep
-that wiring when touching it).
+Hide/show comes from the in-house `useHideOnScroll` hook (the conventional
+rAF-throttled scroll-direction pattern): scrolling down past 90px hides the
+bar, any upward scroll past 6px tolerance reveals it, and it is always
+visible near the top. The hover reveal zones (top edge ≥ 960px, bottom edge
+below) use the hook's `hold(true)` — the bar is revealed once and *held*
+while the pointer stays in the zone; scrolling may never re-hide it during a
+hover. Each real reveal (mount included) replays the hamburger pop-out;
+hover-holds never do. The pill nav is centered with an animated sliding
+indicator measured from real DOM geometry (re-measure after
+`useFontsReady()` / resize — keep that wiring when touching it).
 
 Below **960px** (the same breakpoint where the docs sidebar becomes a
 drawer) the whole bar docks to the **bottom edge** for thumb navigation: the
-reveal zone becomes the bottom edge (`headroomRef.current?.pin()` via
-pointer zone), the unpinned state slides down (`translateY(150%)`), `body`
+reveal zone becomes the bottom edge (`hold(true)` via the pointer zone), the
+unpinned state slides down (`translateY(150%)`), `body`
 gets bottom padding for clearance, and `viewport-fit=cover` +
 `env(safe-area-inset-bottom)` keep it clear of the home indicator. The pill
 itself must keep only its theme background — no extra surfaces/shadows; the

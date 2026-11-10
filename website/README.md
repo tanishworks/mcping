@@ -39,7 +39,7 @@ website/src/
 │   └── useScrollSpy.ts     docs sidebar scroll-spy + slug/text helpers
 ├── components/
 │   ├── SiteHeader.tsx      pill nav (sliding indicator), menu btn, repo icons;
-│   │                       scroll behavior via headroom.js
+│   │                       scroll behavior via useHideOnScroll hook
 │   ├── GradientBackground.tsx  drifting gradient blobs + noise grain
 │   ├── Markdown.tsx        custom react-markdown components (.md styling)
 │   └── Icons.tsx           inline SVG icons (currentColor)

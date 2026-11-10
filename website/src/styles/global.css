@@ -132,10 +132,11 @@ a {
 /* ------------------------------------------------------------------ */
 /* Fixed header: menu button · centered pill nav · icon links           */
 /*                                                                      */
-/* headroom.js (see SiteHeader) drives the outer .site-headroom wrapper:
- * pinned by default, --unpinned while scrolling down (tucks away), and it
- * drops back from the top on scroll-up via the transform transition. The
- * inner .site-header is normal flow inside the wrapper. */
+/* `useHideOnScroll` (see SiteHeader) toggles the unpinned class on the
+ * outer .site-headroom wrapper: visible by default, --unpinned while
+ * scrolling down (tucks away), and it drops back from the top on scroll-up
+ * via the transform transition. The inner .site-header is normal flow
+ * inside the wrapper. */
 
 .site-headroom {
   position: fixed;
