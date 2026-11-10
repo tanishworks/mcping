@@ -38,8 +38,9 @@ jobs:
       - name: Package (unix)
         if: runner.os != 'Windows'
         run: |
-          tag="${GITHUB_REF_NAME}"
-          stage="mcping-${tag}-${{ matrix.target }}"
+          # Version-independent asset names keep releases/latest/download/…
+          # URLs stable for the website's install instructions.
+          stage="mcping-${{ matrix.target }}"
           mkdir "$stage"
           cp "target/${{ matrix.target }}/release/mcping" \
              "target/${{ matrix.target }}/release/mctui" \
@@ -52,8 +53,8 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $tag = $env:GITHUB_REF_NAME
-          $stage = "mcping-$tag-${{ matrix.target }}"
+          # Version-independent asset name (see Package (unix)).
+          $stage = "mcping-${{ matrix.target }}"
           New-Item -ItemType Directory -Force "$stage" | Out-Null
           Copy-Item "target/${{ matrix.target }}/release/mcping.exe",
                     "target/${{ matrix.target }}/release/mctui.exe",

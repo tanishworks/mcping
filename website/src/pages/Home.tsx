@@ -4,8 +4,12 @@ import { AsciiReveal, AsciiSkeleton } from 'ascii-reveal';
 import { useFontsReady } from '../hooks/useFontsReady';
 import { CheckIcon, CopyIcon } from '../components/Icons';
 
-const INSTALL_CMD = 'git clone https://github.com/tanishworks/mcping && cd mcping && cargo build --release';
 const REPO_URL = 'https://github.com/tanishworks/mcping';
+const RELEASES_URL = `${REPO_URL}/releases`;
+
+// Latest-download URLs are version-independent (release assets carry the
+// platform target, not the tag), so this link never goes stale.
+const INSTALL_CMD = 'curl -LO https://github.com/tanishworks/mcping/releases/latest/download/mcping-<target>.tar.gz';
 
 const cards = [
   {
@@ -42,19 +46,30 @@ function InstallPill() {
   };
 
   return (
-    <div className="install-pill" data-ascii="fade">
-      <code className="install-pill__cmd" data-ascii-digits>
-        <span className="install-pill__prompt">$ </span>
-        {INSTALL_CMD}
-      </code>
-      <button
-        type="button"
-        className={`install-pill__copy${copied ? ' is-copied' : ''}`}
-        onClick={copy}
-        aria-label={copied ? 'Copied' : 'Copy build command'}
+    <div className="hero__actions">
+      <div className="install-pill" data-ascii="fade">
+        <code className="install-pill__cmd" data-ascii-digits>
+          <span className="install-pill__prompt">$ </span>
+          {INSTALL_CMD}
+        </code>
+        <button
+          type="button"
+          className={`install-pill__copy${copied ? ' is-copied' : ''}`}
+          onClick={copy}
+          aria-label={copied ? 'Copied' : 'Copy download command'}
+        >
+          {copied ? <CheckIcon /> : <CopyIcon />}
+        </button>
+      </div>
+      <a
+        className="btn"
+        href={RELEASES_URL}
+        target="_blank"
+        rel="noreferrer"
+        data-ascii="fade"
       >
-        {copied ? <CheckIcon /> : <CopyIcon />}
-      </button>
+        releases ↗
+      </a>
     </div>
   );
 }

@@ -16,7 +16,33 @@ ping      35ms
 
 ## Install
 
-Building from source requires Rust 1.85+ (edition 2024):
+Releases ships **compiled binaries** — nothing else to install. Grab the
+archive for your platform from the
+[Releases page](https://github.com/tanishworks/mcping/releases)
+(`releases/latest/download/…` links below always point at the newest build):
+
+| Platform            | Asset                                          |
+| ------------------- | ---------------------------------------------- |
+| macOS Apple silicon | `mcping-aarch64-apple-darwin.tar.gz`           |
+| macOS Intel         | `mcping-x86_64-apple-darwin.tar.gz`            |
+| Linux x86_64        | `mcping-x86_64-unknown-linux-gnu.tar.gz`       |
+| Linux aarch64       | `mcping-aarch64-unknown-linux-gnu.tar.gz`      |
+| Windows x86_64      | `mcping-x86_64-pc-windows-msvc.zip`            |
+
+macOS / Linux example:
+
+```sh
+curl -LO https://github.com/tanishworks/mcping/releases/latest/download/mcping-aarch64-apple-darwin.tar.gz
+tar xzf mcping-*.tar.gz && cd mcping-*
+./mcping status alwto.net
+```
+
+Windows: unzip `mcping-x86_64-pc-windows-msvc.zip` and run `mcping.exe`
+from the extracted folder.
+
+### Build from source (optional)
+
+Requires Rust 1.85+ (edition 2024):
 
 ```sh
 git clone https://github.com/tanishworks/mcping
