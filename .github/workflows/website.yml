@@ -43,6 +43,6 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: website/dist
           commit_message: 'chore(website): publish gh-pages [skip ci]'
