@@ -64,6 +64,13 @@ Typography hierarchy:
 | mono   | JetBrains Mono     | pill nav, terminals, code, docs outline      |
 | body   | Inter (variable)   | prose, card copy                             |
 
+Root font-size is fluid and clamped (`clamp(16px, 14.5px + 0.25vw, 18px)`);
+every size below is rem so the scale rides on it. Spacing is a rem scale
+(`.25/.5/.9/1.25/1.5/2.5rem` style cuts) and line-heights are consistent by
+role: 1.6 for UI chips/labels, 1.7 for body copy/cards, 1.8 for prose. Cards
+are an `auto-fit` grid (≥ 15.5rem columns) so they stay horizontal on desktop
+and stack on small viewports.
+
 Fonts are self-hosted woff2 files in `src/assets/fonts/` (no Google Fonts
 network hits) with `font-display: block`, and page reveals are gated behind
 `useFontsReady()` + `document.fonts.ready` so ascii-reveal never animates in a

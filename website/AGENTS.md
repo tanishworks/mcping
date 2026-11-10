@@ -32,7 +32,7 @@ Fallback definitions also exist in `src/theme/theme.css` and must mirror
 (`document.documentElement.dataset.theme`), don't add a manual toggle unless
 asked.
 
-### Typography
+### Typography & spacing
 
 Font stacks are CSS variables in `src/theme/theme.css`:
 `--font-body` (Inter), `--font-mono` (JetBrains Mono), `--font-pixel`
@@ -41,6 +41,21 @@ terminals & code, Inter = prose. All fonts are **local woff2** files in
 `src/assets/fonts/` declared in `src/fonts.css` with `font-display: block`.
 Do not add remote font imports. If a new weight/style is needed, download the
 woff2 and add an `@font-face`, don't link a CDN.
+
+Spacing/type scale (hard rules, mirrors the tagg site):
+
+- Root size: `html { font-size: clamp(16px, 14.5px + 0.25vw, 18px) }`; sizes
+  everything below in rem.
+- Line-heights: 1.6 UI/labels, 1.7 body copy/cards, 1.8 prose — never mix
+  other values; keep heading line-heights 1.15–1.5.
+- Spacing in rem on the `.25/.5/.9/1.25/1.5/2/2.5rem` cuts; sections use
+  `padding: 2.5rem 1.5rem` and the standard container is `max-width: 72rem`.
+- Display sizes use conventional clamps (e.g.
+  `clamp(2.2rem, 8vw, 4.6rem)` for the hero).
+- Card grids are `repeat(auto-fit, minmax(15.5rem, 1fr))` and the grid IS the
+  `AsciiReveal` wrapper (`className="cards"`), not a section on top of it —
+  otherwise the reveal wrapper becomes the only grid child and the cards
+  stack vertically.
 
 ### ascii-reveal
 

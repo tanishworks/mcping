@@ -66,7 +66,7 @@ export function Home() {
   const fontsReady = useFontsReady();
 
   return (
-    <main className="page">
+    <main>
       {fontsReady ? (
         <section className="hero">
           <AsciiReveal preset="decode" duration="cinematic">
@@ -93,8 +93,8 @@ export function Home() {
 
       {fontsReady && (
         <>
-          <section className="cards">
-            <AsciiReveal preset="decode">
+          <section className="section">
+            <AsciiReveal preset="decode" as="div" className="cards">
               {cards.map((card) => (
                 <article className="card" key={card.index} data-ascii="surface">
                   <span className="card__index">{card.index}</span>
@@ -105,7 +105,7 @@ export function Home() {
             </AsciiReveal>
           </section>
 
-          <section>
+          <section className="section">
             <AsciiReveal preset="decode">
               <pre className="terminal" data-ascii="surface">
                 <code>
