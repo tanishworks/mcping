@@ -13,6 +13,10 @@ const links = [
 const SHOW_AT_TOP_PX = 90;
 const HOVER_ZONE_PX = 72;
 
+/* Same breakpoint as the docs-drawer CSS: below it the bar docks to the
+ * bottom of the screen, so the hover/reveal zone is the bottom edge. */
+const BOTTOM_BAR_QUERY = '(max-width: 959px)';
+
 /**
  * Fixed header: a centered pill nav; on /docs the hamburger pops out of the
  * pill's left edge (spring animation) and rests just to its left — it is
@@ -24,8 +28,9 @@ const HOVER_ZONE_PX = 72;
  * - The pill indicator slides between tabs (measured from the real DOM, so
  *   it tracks font loading and resizes).
  * - The bar hides while scrolling down and reappears on scroll-up or when
- *   the pointer enters the top edge of the screen; each re-entrance replays
- *   the hamburger pop-out.
+ *   the pointer enters the reveal zone — the top edge on wide screens; on
+ *   viewports below 960px the bar docks to the bottom edge for thumb reach
+ *   and the reveal zone is the bottom edge instead.
  */
 export function SiteHeader({ onToggleDocs }: { onToggleDocs?: () => void }) {
   const [hidden, setHidden] = useState(false);
@@ -85,7 +90,11 @@ export function SiteHeader({ onToggleDocs }: { onToggleDocs?: () => void }) {
       lastY = y;
     };
     const onMove = (e: MouseEvent) => {
-      if (e.clientY <= HOVER_ZONE_PX) reveal();
+      const bottomBar = window.matchMedia(BOTTOM_BAR_QUERY).matches;
+      const inZone = bottomBar
+        ? e.clientY >= window.innerHeight - HOVER_ZONE_PX
+        : e.clientY <= HOVER_ZONE_PX;
+      if (inZone) reveal();
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('mousemove', onMove, { passive: true });
