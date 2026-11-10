@@ -14,7 +14,7 @@ use std::thread;
 use std::time::{Duration, Instant};
 
 use clap::Parser;
-use mcping::protocol::{read_varint, write_varint, write_string};
+use mcping::protocol::{read_varint, write_string, write_varint};
 use serde_json::json;
 
 const PROTOCOL_VERSION: i32 = 767;
@@ -73,7 +73,11 @@ fn main() -> anyhow::Result<()> {
     }
 
     let listener = TcpListener::bind(("127.0.0.1", args.port))?;
-    println!("mcmock: listening on 127.0.0.1:{} (players: {:?})", args.port, players.lock().unwrap());
+    println!(
+        "mcmock: listening on 127.0.0.1:{} (players: {:?})",
+        args.port,
+        players.lock().unwrap()
+    );
 
     // Apply scripted join/leave events on their own thread.
     if !script.is_empty() {
@@ -138,29 +142,35 @@ fn parse_script(script: &str) -> anyhow::Result<Vec<(u64, ScriptEvent)>> {
     let mut events = Vec::new();
 
     for entry in script.split(',').map(str::trim).filter(|s| !s.is_empty()) {
-        let (secs, rest) = entry
-            .split_once(':')
-            .ok_or_else(|| anyhow::anyhow!("invalid script entry '{entry}', expected 'secs:+Name'"))?;
+        let (secs, rest) = entry.split_once(':').ok_or_else(|| {
+            anyhow::anyhow!("invalid script entry '{entry}', expected 'secs:+Name'")
+        })?;
 
-        let secs = secs.parse::<u64>().map_err(|_| anyhow::anyhow!("invalid seconds in '{entry}'"))?;
-        let (sign, name) = rest
-            .split_at(rest.char_indices().nth(1).map(|(i, _)| i).unwrap_or(rest.len()));
+        let secs = secs
+            .parse::<u64>()
+            .map_err(|_| anyhow::anyhow!("invalid seconds in '{entry}'"))?;
+        let (sign, name) = rest.split_at(
+            rest.char_indices()
+                .nth(1)
+                .map(|(i, _)| i)
+                .unwrap_or(rest.len()),
+        );
 
         match sign {
             "+" if !name.is_empty() => events.push((secs, ScriptEvent::Join(name.to_string()))),
             "-" if !name.is_empty() => events.push((secs, ScriptEvent::Leave(name.to_string()))),
-            _ => return Err(anyhow::anyhow!("invalid event in '{entry}', expected +Name or -Name")),
+            _ => {
+                return Err(anyhow::anyhow!(
+                    "invalid event in '{entry}', expected +Name or -Name"
+                ));
+            }
         }
     }
 
     Ok(events)
 }
 
-fn handle(
-    mut stream: TcpStream,
-    players: Arc<Mutex<Vec<String>>>,
-    max: u32,
-) -> io::Result<()> {
+fn handle(mut stream: TcpStream, players: Arc<Mutex<Vec<String>>>, max: u32) -> io::Result<()> {
     stream.set_read_timeout(Some(Duration::from_secs(5)))?;
     stream.set_write_timeout(Some(Duration::from_secs(5)))?;
 
@@ -177,7 +187,7 @@ fn handle(
     let host_len = read_varint(&mut cursor)? as usize;
     let mut host = vec![0u8; host_len];
     cursor.read_exact(&mut host)?;
-    let _port = cursor.read_exact(&mut [0u8; 2])?;
+    cursor.read_exact(&mut [0u8; 2])?; // port
 
     if read_varint(&mut cursor)? != 1 {
         return Ok(()); // not a status ping, ignore
@@ -238,7 +248,10 @@ fn read_packet(stream: &mut TcpStream) -> io::Result<Vec<u8>> {
     let length = read_varint(stream)?;
 
     if length <= 0 || length > MAX_PACKET_LEN {
-        return Err(io::Error::new(io::ErrorKind::InvalidData, "bad packet length"));
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidData,
+            "bad packet length",
+        ));
     }
 
     let mut buf = vec![0u8; length as usize];
@@ -254,7 +267,11 @@ fn fake_uuid(name: &str, index: usize) -> String {
         hash = (hash ^ byte as u64).wrapping_mul(0x100_0000_01b3);
     }
 
-    format!("{:08x}-0000-4000-8000-{:012x}", (hash >> 32) as u32, hash & 0xfff_ffff_ffff)
+    format!(
+        "{:08x}-0000-4000-8000-{:012x}",
+        (hash >> 32) as u32,
+        hash & 0xfff_ffff_ffff
+    )
 }
 
 #[cfg(test)]

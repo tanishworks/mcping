@@ -1,0 +1,87 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, target: x86_64-unknown-linux-gnu }
+          - { os: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu }
+          - { os: macos-latest, target: aarch64-apple-darwin }
+          - { os: macos-latest, target: x86_64-apple-darwin }
+          - { os: windows-latest, target: x86_64-pc-windows-msvc }
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
+
+      - name: Build
+        run: cargo build --release --target ${{ matrix.target }}
+
+      - name: Package (unix)
+        if: runner.os != 'Windows'
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          stage="mcping-${tag}-${{ matrix.target }}"
+          mkdir "$stage"
+          cp "target/${{ matrix.target }}/release/mcping" \
+             "target/${{ matrix.target }}/release/mctui" \
+             "target/${{ matrix.target }}/release/mcmock" \
+             README.md "$stage/"
+          tar czf "$stage.tar.gz" "$stage"
+          echo "ASSET=$stage.tar.gz" >> "$GITHUB_ENV"
+
+      - name: Package (windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $tag = $env:GITHUB_REF_NAME
+          $stage = "mcping-$tag-${{ matrix.target }}"
+          New-Item -ItemType Directory -Force "$stage" | Out-Null
+          Copy-Item "target/${{ matrix.target }}/release/mcping.exe",
+                    "target/${{ matrix.target }}/release/mctui.exe",
+                    "target/${{ matrix.target }}/release/mcmock.exe",
+                    "README.md" "$stage/"
+          Compress-Archive -Path "$stage" -DestinationPath "$stage.zip"
+          "ASSET=$stage.zip" | Add-Content $env:GITHUB_ENV
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: asset-${{ matrix.target }}
+          path: ${{ env.ASSET }}
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: asset-*
+          merge-multiple: true
+          path: dist
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true

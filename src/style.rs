@@ -9,9 +9,7 @@ use std::sync::OnceLock;
 
 fn color_enabled() -> bool {
     static ENABLED: OnceLock<bool> = OnceLock::new();
-    *ENABLED.get_or_init(|| {
-        env::var_os("NO_COLOR").is_none() && std::io::stdout().is_terminal()
-    })
+    *ENABLED.get_or_init(|| env::var_os("NO_COLOR").is_none() && std::io::stdout().is_terminal())
 }
 
 fn wrap(code: &str, text: &str) -> String {

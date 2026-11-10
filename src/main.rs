@@ -70,7 +70,11 @@ fn main() -> ExitCode {
     match cli.command {
         Command::Status { addr } => cmd_status(&addr),
         Command::Ping { addr } => cmd_ping(&addr),
-        Command::Watch { mode, interval, no_notify } => cmd_watch(mode, interval, !no_notify),
+        Command::Watch {
+            mode,
+            interval,
+            no_notify,
+        } => cmd_watch(mode, interval, !no_notify),
     }
 }
 
@@ -159,19 +163,28 @@ fn cmd_ping(addr: &ServerAddr) -> ExitCode {
 
 fn cmd_watch(mode: WatchMode, interval: u64, desktop_notifications: bool) -> ExitCode {
     if interval == 0 {
-        eprintln!("{} interval must be at least 1 second", style::red("error:"));
+        eprintln!(
+            "{} interval must be at least 1 second",
+            style::red("error:")
+        );
         return ExitCode::FAILURE;
     }
 
     let (addr, filter) = match mode {
         WatchMode::Server { addr } => (
             addr,
-            WatchFilter { alert_server: true, ..WatchFilter::default() },
+            WatchFilter {
+                alert_server: true,
+                ..WatchFilter::default()
+            },
         ),
         WatchMode::Player { addr, user, leave } => {
             let user = match user {
                 Some(user) if user.trim().is_empty() => {
-                    eprintln!("{} watched player name cannot be empty", style::red("error:"));
+                    eprintln!(
+                        "{} watched player name cannot be empty",
+                        style::red("error:")
+                    );
                     return ExitCode::FAILURE;
                 }
                 user => user,
@@ -179,7 +192,11 @@ fn cmd_watch(mode: WatchMode, interval: u64, desktop_notifications: bool) -> Exi
 
             (
                 addr,
-                WatchFilter { user, alert_leave: leave, alert_server: false },
+                WatchFilter {
+                    user,
+                    alert_leave: leave,
+                    alert_server: false,
+                },
             )
         }
     };
