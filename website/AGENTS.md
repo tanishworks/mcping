@@ -65,10 +65,20 @@ Spacing/type scale (hard rules, mirrors the tagg site):
 ### Icons
 
 Favicons and the hero icon come from the repo's `icon/exportss/png/` exports —
-`website/public/favicon-32.png` (favicon), `website/public/apple-touch-icon.png`
+`website/public/favicon-32.png` (favicon, dark appearance),
+`website/public/apple-touch-icon.png`
 (home-screen icon) and `website/src/assets/icon.png` (landing hero) are all
 `sips`-downscaled from `icon/exportss/png/Icon-iOS-Dark-512@1x.png`; regenerate
 with `sips -z <size> <size> <source> --out <dest>` rather than hand-editing.
+The light-appearance favicon `website/public/favicon-32-light.png` is derived
+from the same monochrome dark export: run
+`node scripts/invert-png.mjs` (inverts RGB, keeps alpha) on
+`Icon-iOS-Dark-512@1x.png`, then `sips`-downscale the result to 32×32. The
+icon project has no light export, so don't regenerate it from any other
+source. `index.html` switches favicons per scheme with `media` attributes
+(light icon in `prefers-color-scheme: light`, dark icon in dark), mirroring
+the `theme-color` meta tags; bump the `?v=` cache-buster when changing icon
+files.
 The hero `<img>` must keep `data-ascii="fade"` and its intrinsic
 width/height attributes (no CLS).
 
