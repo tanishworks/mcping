@@ -44,9 +44,9 @@ website/src/
 │   ├── Markdown.tsx        custom react-markdown components (.md styling)
 ├── pages/
 │   ├── Home.tsx            viewport-height hero, install pill, Releases/About actions
-│   ├── About.tsx           project overview, install targets, CLI usage, caveats
+│   ├── About.tsx           copy-ready quick commands for common tasks
 │   └── Docs.tsx            sidebar outline + rendered docs.md
-├── content/docs.md         the actual docs content (rendered on /docs)
+├── content/docs.md         canonical docs and common command examples (/docs)
 └── styles/global.css       all layout/component CSS
 ```
 

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BookOpen, CircleDot, House, Menu, Tag } from 'lucide-react';
+import { BookOpen, CircleDot, House, Menu, Tag, Compass } from 'lucide-react';
 import { useFontsReady } from '../hooks/useFontsReady';
 import { GitHubMark } from './GitHubMark';
 
@@ -11,6 +11,7 @@ const iconProps = { size: 16, strokeWidth: 1.6, 'aria-hidden': true } as const;
 
 const links = [
   { to: '/', label: 'home', icon: House },
+    { to: '/about', label: 'explore', icon: Compass },
   { to: '/docs', label: 'docs', icon: BookOpen },
 ];
 

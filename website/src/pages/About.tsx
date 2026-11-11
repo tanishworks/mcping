@@ -1,156 +1,103 @@
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Check, Copy } from 'lucide-react';
 
-const REPO_URL = 'https://github.com/tanishworks/mcping';
-const RELEASES_URL = `${REPO_URL}/releases`;
-
-const platforms = [
-  ['macOS · Apple silicon', 'aarch64-apple-darwin'],
-  ['macOS · Intel', 'x86_64-apple-darwin'],
-  ['Linux · x86_64', 'x86_64-unknown-linux-gnu'],
-  ['Linux · ARM64', 'aarch64-unknown-linux-gnu'],
-  ['Windows · x86_64', 'x86_64-pc-windows-msvc'],
+// Keep this copy-ready subset in sync with src/content/docs.md → Common tasks.
+const examples = [
+  {
+    title: 'See server status',
+    description: 'Get the MOTD, version, player count, sample names, and latency.',
+    command: 'mcping status alwto.net',
+  },
+  {
+    title: 'Check latency',
+    description: 'Measure one real ping/pong round-trip.',
+    command: 'mcping ping alwto.net',
+  },
+  {
+    title: 'Know when a server changes',
+    description: 'Watch for online/offline changes; Ctrl-C stops the watcher.',
+    command: 'mcping watch server alwto.net --interval 30',
+  },
+  {
+    title: 'Track a player',
+    description: 'Get join and leave alerts for one player.',
+    command: 'mcping watch player alwto.net D1xP --leave',
+  },
+  {
+    title: 'Watch everyone',
+    description: 'Omit the player name to report joins from the published sample.',
+    command: 'mcping watch player alwto.net',
+  },
+  {
+    title: 'Open the live dashboard',
+    description: 'View the player gauge, ping history, MOTD, and roster. Press q to quit.',
+    command: 'mctui alwto.net --interval 5',
+  },
 ];
 
-const commands = [
-  {
-    command: 'mcping status <host[:port]>',
-    description: 'Show the server MOTD, version, player count, sample player names, and ping.',
-  },
-  {
-    command: 'mcping ping <host[:port]>',
-    description: 'Measure a real ping/pong round-trip to the server.',
-  },
-  {
-    command: 'mcping watch server <host[:port]>',
-    description: 'Watch for the server coming online or going offline.',
-  },
-  {
-    command: 'mcping watch player <host[:port]> [name] [--leave]',
-    description: 'Watch one player for joins (and leaves with --leave), or omit the name to watch everyone.',
-  },
-  {
-    command: 'mctui <host[:port]> [--interval 5]',
-    description: 'Open the live terminal dashboard with a player gauge, ping history, MOTD, and roster.',
-  },
-];
+function CopyCommand({ command }: { command: string }) {
+  const [copied, setCopied] = useState(false);
+  const timer = useRef<number | undefined>(undefined);
+
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(command);
+      setCopied(true);
+      timer.current = window.setTimeout(() => setCopied(false), 1600);
+    } catch {
+      // Clipboard unavailable — keep the command visible for manual copy.
+    }
+  };
+
+  return (
+    <div className="about-page__command">
+      <code>{command}</code>
+      <button
+        type="button"
+        className="about-page__copy"
+        onClick={copy}
+        aria-label={copied ? 'Command copied' : 'Copy command'}
+        title={copied ? 'Copied' : 'Copy command'}
+      >
+        {copied ? <Check size={16} strokeWidth={1.6} aria-hidden /> : <Copy size={16} strokeWidth={1.6} aria-hidden />}
+      </button>
+    </div>
+  );
+}
 
 export function About() {
   return (
     <main className="about-page">
       <header className="about-page__intro">
-        <p className="about-page__eyebrow">minecraft · java edition · cli</p>
-        <h1 className="about-page__title">About mcping</h1>
+        <p className="about-page__eyebrow">mcping · quick examples</p>
+        <h1 className="about-page__title">Explore mcping</h1>
         <p className="about-page__lead">
-          A small command-line toolkit for checking Minecraft Java servers,
-          tracking changes, and keeping a live dashboard in your terminal.
-          Get useful status without ever joining the server.
+          Already installed? Choose what you want to do, copy the command, and
+          paste it into your terminal. These examples use <code>alwto.net</code>;
+          replace it with your server address.
         </p>
       </header>
 
-      <section className="about-page__section" aria-labelledby="about-features">
-        <h2 id="about-features">What it does</h2>
-        <div className="about-page__feature-grid">
-          <article className="about-page__feature">
-            <h3>Server status</h3>
-            <p>
-              Read the MOTD, Minecraft version, online and maximum players,
-              any player names the server publishes, and measured latency.
-            </p>
+      <section className="about-page__examples" aria-label="Common tasks">
+        {examples.map(({ title, description, command }) => (
+          <article className="about-page__example" key={command}>
+            <h2>{title}</h2>
+            <p>{description}</p>
+            <CopyCommand command={command} />
           </article>
-          <article className="about-page__feature">
-            <h3>Watch for changes</h3>
-            <p>
-              Poll server availability or player activity. Events print in the
-              terminal with a bell and can also send a desktop notification.
-            </p>
-          </article>
-          <article className="about-page__feature">
-            <h3>Live dashboard</h3>
-            <p>
-              Use <code>mctui</code> for a full-screen view with a player gauge,
-              ping-history chart, MOTD, and scrollable player list.
-            </p>
-          </article>
-          <article className="about-page__feature">
-            <h3>Mock server for testing</h3>
-            <p>
-              <code>mcmock</code> can simulate player joins, leaves, and server
-              availability changes while you test scripts and alerts.
-            </p>
-          </article>
-        </div>
+        ))}
       </section>
 
-      <section className="about-page__section" aria-labelledby="about-install">
-        <h2 id="about-install">Install</h2>
-        <p>
-          Download the archive for your operating system and processor from the
-          latest release. Each archive includes <code>mcping</code>,{' '}
-          <code>mctui</code>, and <code>mcmock</code>; no Rust installation is
-          needed to use the prebuilt tools.
-        </p>
-        <ul className="about-page__platforms">
-          {platforms.map(([label, target]) => (
-            <li key={target}>
-              <span>{label}</span>
-              <code>{target}</code>
-            </li>
-          ))}
-        </ul>
-        <p>
-          Extract the archive and run the binary from its folder, or add that
-          folder to your <code>PATH</code>. Windows downloads are ZIP files;
-          macOS and Linux downloads are <code>.tar.gz</code> archives.
-        </p>
-        <a className="btn about-page__release-link" href={RELEASES_URL} target="_blank" rel="noreferrer">
-          download a release ↗
-        </a>
-      </section>
-
-      <section className="about-page__section" aria-labelledby="about-commands">
-        <h2 id="about-commands">How to use it</h2>
-        <dl className="about-page__commands">
-          {commands.map(({ command, description }) => (
-            <div className="about-page__command" key={command}>
-              <dt><code>{command}</code></dt>
-              <dd>{description}</dd>
-            </div>
-          ))}
-        </dl>
-        <p className="about-page__hint">
-          Addresses can be <code>host</code>, <code>host:port</code>, or{' '}
-          <code>[ipv6]:port</code>; the default port is <code>25565</code>.
-          Watch commands poll every 10 seconds by default. Set{' '}
-          <code>--interval &lt;seconds&gt;</code> to change that,{' '}
-          <code>--no-notify</code> for terminal-only events, and press{' '}
-          <code>Ctrl-C</code> to stop.
-        </p>
-      </section>
-
-      <section className="about-page__section" aria-labelledby="about-notes">
-        <h2 id="about-notes">A couple of details</h2>
-        <ul className="about-page__notes">
-          <li>
-            Status checks use the server list ping protocol and a real
-            ping/pong round-trip. They never send a player join.
-          </li>
-          <li>
-            Player names come from the server&apos;s status sample. Vanilla
-            servers may show only a small random sample, and some servers hide
-            names entirely.
-          </li>
-          <li>
-            Watch mode requires two consecutive failed polls before reporting
-            offline, which helps avoid false alarms from a single hiccup.
-          </li>
-        </ul>
-      </section>
-
-      <nav className="about-page__footer" aria-label="More mcping resources">
-        <Link to="/">← home</Link>
-        <Link to="/docs">full documentation</Link>
-        <a href={REPO_URL} target="_blank" rel="noreferrer">source ↗</a>
-      </nav>
+      <p className="about-page__hint">
+        Use <code>host:port</code> for a custom port (default <code>25565</code>).
+        Watch commands poll every 10 seconds by default; use{' '}
+        <code>--interval &lt;seconds&gt;</code> to change it. Player names depend
+        on what the server publishes. See <Link to="/docs">docs</Link> for
+        installation, all options, and full details.
+      </p>
     </main>
   );
 }

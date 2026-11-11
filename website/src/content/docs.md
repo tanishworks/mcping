@@ -67,6 +67,20 @@ mcping watch server <addr>     # notify when the server goes online/offline
 mcping watch player <addr> [user] [--leave]
 ```
 
+### Common tasks
+
+These examples use `alwto.net`; replace it with your server address. The
+default port is `25565`.
+
+| Goal | Command |
+| --- | --- |
+| See MOTD, version, players, names, and ping | `mcping status alwto.net` |
+| Measure latency | `mcping ping alwto.net` |
+| Watch for server online/offline changes | `mcping watch server alwto.net --interval 30` |
+| Get join/leave alerts for one player | `mcping watch player alwto.net D1xP --leave` |
+| Watch joins from any published player | `mcping watch player alwto.net` |
+| Open the live dashboard; refresh every 5 seconds | `mctui alwto.net --interval 5` |
+
 `watch player` notifies on joins (`--leave` adds leaves); omit the user to
 watch any player. Watch flags: `--interval <secs>` (default 10) and
 `--no-notify` (terminal only).
