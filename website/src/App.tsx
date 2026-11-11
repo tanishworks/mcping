@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-route
 import { ThemeProvider } from './theme/theme';
 import { GradientBackground } from './components/GradientBackground';
 import { SiteHeader } from './components/SiteHeader';
+import { About } from './pages/About';
 import { Home } from './pages/Home';
 import { Docs } from './pages/Docs';
 
@@ -42,6 +43,7 @@ function Shell() {
       />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
         <Route
           path="/docs"
           element={

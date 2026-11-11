@@ -12,24 +12,6 @@ const RELEASES_URL = `${REPO_URL}/releases`;
 // platform target, not the tag), so this link never goes stale.
 const INSTALL_CMD = 'curl -LO https://github.com/tanishworks/mcping/releases/latest/download/mcping-<target>.tar.gz';
 
-const cards = [
-  {
-    index: '01',
-    title: 'Status without joining',
-    body: 'MOTD, version, player counts, player names and latency — measured with one real ping/pong round-trip. No join is ever sent to the server.',
-  },
-  {
-    index: '02',
-    title: 'Watch modes',
-    body: 'Watch a server for online/offline flips or a player for joins and leaves. Events ring the terminal bell and fire desktop notifications.',
-  },
-  {
-    index: '03',
-    title: 'Live TUI dashboard',
-    body: 'mctui keeps a player gauge, ping-history chart, MOTD and scrollable roster on screen, refreshing in place until you quit.',
-  },
-];
-
 function InstallPill() {
   const [copied, setCopied] = useState(false);
   const timer = useRef<number | undefined>(undefined);
@@ -66,15 +48,20 @@ function InstallPill() {
           )}
         </button>
       </div>
-      <a
-        className="btn"
-        href={RELEASES_URL}
-        target="_blank"
-        rel="noreferrer"
-        data-ascii="fade"
-      >
-        releases ↗
-      </a>
+      <div className="hero__links">
+        <a
+          className="btn"
+          href={RELEASES_URL}
+          target="_blank"
+          rel="noreferrer"
+          data-ascii="fade"
+        >
+          releases ↗
+        </a>
+        <Link className="btn btn--secondary" to="/about" data-ascii="fade">
+          about mcping
+        </Link>
+      </div>
     </div>
   );
 }
@@ -86,7 +73,7 @@ export function Home() {
   const fontsReady = useFontsReady();
 
   return (
-    <main>
+    <main className="home">
       {fontsReady ? (
         <section className="hero">
           <AsciiReveal preset="decode" duration="cinematic">
@@ -120,45 +107,6 @@ export function Home() {
         </section>
       )}
 
-      {fontsReady && (
-        <>
-          <section className="section">
-            <AsciiReveal preset="decode" as="div" className="cards">
-              {cards.map((card) => (
-                <article className="card" key={card.index} data-ascii="surface">
-                  <span className="card__index">{card.index}</span>
-                  <h2 className="card__title">{card.title}</h2>
-                  <p className="card__body">{card.body}</p>
-                </article>
-              ))}
-            </AsciiReveal>
-          </section>
-
-          <section className="section">
-            <AsciiReveal preset="decode">
-              <pre className="terminal" data-ascii="surface">
-                <code>
-                  <span className="terminal__prompt">$ </span>mcping status alwto.net{'\n'}
-                  <span className="terminal__dim">1.21 + | ᴀʟᴡᴛᴏ.ɴᴇᴛ | 26.3 UPDATE SPEARS{'\n'}ᴀʟᴡᴛᴏ ᴘʀᴀᴄᴛɪᴄᴇ | ᴅᴜᴇʟs✦ғғᴀ✦ᴘᴀʀᴛʏ✦ᴇᴠᴇɴᴛs{'\n'}</span>
-                  alwto.net:25565{'\n'}
-                  <span className="terminal__dim">version  </span>Velocity 1.7.2-26.3 (protocol 767){'\n'}
-                  <span className="terminal__dim">players  </span>332/2555{'\n'}
-                  <span className="terminal__dim">ping     </span>35ms
-                </code>
-              </pre>
-            </AsciiReveal>
-          </section>
-        </>
-      )}
-
-      <footer className="footer">
-        <span>
-          rust · no account · <Link to="/docs">docs</Link> ·{' '}
-          <a href={REPO_URL} target="_blank" rel="noreferrer">
-            source
-          </a>
-        </span>
-      </footer>
     </main>
   );
 }

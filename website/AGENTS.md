@@ -5,7 +5,7 @@ mcping site. Read this before changing anything.
 
 ## What this is
 
-- Vite + React 19 + TypeScript SPA, two pages: `/` (home) and `/docs`.
+- Vite + React 19 + TypeScript SPA with `/` (home), `/about`, and `/docs`.
 - Lives in `website/` inside the mcping repo; deployed to GitHub Pages at
   https://tanishworks.github.io/mcping/ from the `gh-pages` branch (CI pushes
   `website/dist` there via
@@ -75,7 +75,8 @@ width/height attributes (no CLS).
 ### ascii-reveal
 
 Reveal effects (`AsciiReveal`, `AsciiSkeleton`) from the `ascii-reveal` npm
-package load hero/cards/docs. Layout rules:
+package load the home hero and docs page. The About page is static. Layout
+rules:
 
 - Reveals must start only after fonts are ready (`useFontsReady()` /
   `document.fonts.ready`) so text never swaps typeface mid-animation.
@@ -96,12 +97,21 @@ touching it).
 
 Below **960px** (the same breakpoint where the docs sidebar becomes a
 drawer) the whole bar docks to the **bottom edge** for thumb navigation and
-the tabs become icon-over-label (`lucide-react` icons, 1.1rem, 0.65rem mono
-labels); desktop tabs stay text-only (`padding-block: 0.3rem` keeps the pill
-slim). `body` gets bottom padding for clearance, and `viewport-fit=cover` +
-`env(safe-area-inset-bottom)` keep the bar clear of the home indicator. The
-pill itself must keep only its theme background — no extra surfaces/shadows;
-the repo icon links live in their own solid pill at the right edge.
+the tabs become icon-over-label (`lucide-react` icons, 1.6rem, 0.72rem mono
+labels); desktop tabs stay text-only. `body` gets bottom padding for
+clearance, except on the home page, whose viewport-height hero reserves its
+own space. `viewport-fit=cover` + `env(safe-area-inset-bottom)` keep the bar
+clear of the home indicator. The pill itself must keep only its theme
+background — no extra surfaces/shadows; the repo icon links live in their own
+solid pill at the right edge.
+
+### Home and About pages
+
+The home page is a centered, viewport-height landing hero only: keep the app
+icon, title, summary, install command, and adjacent Releases/About actions.
+Do not add content beneath the actions. The About page is the longer project
+overview and usage guide; keep its commands, platform targets, watch flags,
+and caveats aligned with `src/content/docs.md` and the root README.
 
 ### Icons (lucide)
 
