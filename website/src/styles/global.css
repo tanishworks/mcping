@@ -214,7 +214,7 @@ a {
   transition:
     color 150ms ease,
     border-color 150ms ease,
-    transform 120ms ease;
+    transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .icon-btn:hover {
@@ -222,8 +222,21 @@ a {
   border-color: var(--fg);
 }
 
-.icon-btn:active {
+/* -- spring press feedback ---------------------------------------------
+ * Every pressable element squashes to scale(0.97) while pressed and
+ * springs back with an overshoot curve on release (the spring lives on
+ * each element's base transform transition). Press-down swaps in a quick
+ * ease so the feedback lands immediately; the bounce happens on release. */
+.icon-btn:active,
+.btn:active,
+.install-pill__copy:active,
+.about-page__copy:active,
+.pill-nav__link:active,
+.docs__sidebar-link:active {
   transform: scale(0.97);
+  transition-property: transform;
+  transition-duration: 100ms;
+  transition-timing-function: ease-out;
 }
 
 .icon-btn svg {
@@ -311,7 +324,9 @@ a {
   color: var(--muted);
   text-decoration: none;
   white-space: nowrap;
-  transition: color 200ms ease;
+  transition:
+    color 200ms ease,
+    transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* Desktop tabs are text-only; the icon only shows in the mobile tab bar. */
@@ -478,7 +493,7 @@ a {
   cursor: pointer;
   transition:
     color 150ms ease,
-    transform 120ms ease;
+    transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .install-pill__copy svg {
@@ -527,7 +542,7 @@ a {
     background-color 150ms ease,
     color 150ms ease,
     border-color 150ms ease,
-    transform 120ms ease;
+    transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .btn:hover {
@@ -546,10 +561,6 @@ a {
   border-color: var(--fg);
   background: var(--fg);
   color: var(--bg);
-}
-
-.btn:active {
-  transform: scale(0.97);
 }
 
 /* -- About page ------------------------------------------------------ */
@@ -667,7 +678,10 @@ a {
   background: var(--bg);
   color: var(--muted);
   cursor: pointer;
-  transition: color 150ms ease, border-color 150ms ease;
+  transition:
+    color 150ms ease,
+    border-color 150ms ease,
+    transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .about-page__copy:hover {
@@ -732,7 +746,9 @@ a {
     background: var(--bg);
     border-right: 1px solid var(--hairline);
     transform: translateX(-104%);
-    transition: transform 300ms cubic-bezier(0.3, 0.9, 0.3, 1);
+    /* Springy slide: the overshoot curve eases it past its resting spot so
+     * the drawer visibly bounces as it settles open. */
+    transition: transform 420ms cubic-bezier(0.34, 1.3, 0.64, 1);
   }
 
   .docs--sidebar-open .docs__sidebar {
@@ -799,7 +815,8 @@ a {
   text-decoration: none;
   transition:
     color 150ms ease,
-    border-color 150ms ease;
+    border-color 150ms ease,
+    transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* h3 entries indent one step. */
@@ -992,6 +1009,17 @@ a {
   .docs__sidebar,
   .pill-nav__indicator {
     transition: none;
+  }
+
+  /* Press feedback stays, but the spring squash becomes an instant state
+   * change instead of an animated overshoot. */
+  .icon-btn,
+  .btn,
+  .install-pill__copy,
+  .about-page__copy,
+  .pill-nav__link,
+  .docs__sidebar-link {
+    transition-duration: 0s;
   }
 
   .menu-btn.is-popping {
