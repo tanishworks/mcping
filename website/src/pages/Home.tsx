@@ -28,8 +28,11 @@ function InstallPill() {
     }
   };
 
+  // The reveal wrapper IS the flex column (the .cards-grid pattern), so the
+  // install pill and action buttons ride the hero's decode wave instead of
+  // popping in stock — their `data-ascii` attributes are inert without it.
   return (
-    <div className="hero__actions">
+    <AsciiReveal preset="decode" as="div" className="hero__actions">
       <div className="install-pill" data-ascii="fade">
         <code className="install-pill__cmd" data-ascii-digits>
           <span className="install-pill__prompt">$ </span>
@@ -62,7 +65,7 @@ function InstallPill() {
           about mcping
         </Link>
       </div>
-    </div>
+    </AsciiReveal>
   );
 }
 
