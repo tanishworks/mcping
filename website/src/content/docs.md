@@ -1,4 +1,4 @@
-# mcping
+# Documentation
 
 Lightweight Minecraft (Java Edition) server status CLI — player counts, player
 names and latency **without joining the server**, plus watch modes that notify
@@ -21,13 +21,13 @@ archive for your platform from the
 [Releases page](https://github.com/tanishworks/mcping/releases)
 (`releases/latest/download/…` links below always point at the newest build):
 
-| Platform            | Asset                                          |
-| ------------------- | ---------------------------------------------- |
-| macOS Apple silicon | `mcping-aarch64-apple-darwin.tar.gz`           |
-| macOS Intel         | `mcping-x86_64-apple-darwin.tar.gz`            |
-| Linux x86_64        | `mcping-x86_64-unknown-linux-gnu.tar.gz`       |
-| Linux aarch64       | `mcping-aarch64-unknown-linux-gnu.tar.gz`      |
-| Windows x86_64      | `mcping-x86_64-pc-windows-msvc.zip`            |
+| Platform            | Asset                                     |
+| ------------------- | ----------------------------------------- |
+| macOS Apple silicon | `mcping-aarch64-apple-darwin.tar.gz`      |
+| macOS Intel         | `mcping-x86_64-apple-darwin.tar.gz`       |
+| Linux x86_64        | `mcping-x86_64-unknown-linux-gnu.tar.gz`  |
+| Linux aarch64       | `mcping-aarch64-unknown-linux-gnu.tar.gz` |
+| Windows x86_64      | `mcping-x86_64-pc-windows-msvc.zip`       |
 
 macOS / Linux example:
 
@@ -72,14 +72,14 @@ mcping watch player <addr> [user] [--leave]
 These examples use `alwto.net`; replace it with your server address. The
 default port is `25565`.
 
-| Goal | Command |
-| --- | --- |
-| See MOTD, version, players, names, and ping | `mcping status alwto.net` |
-| Measure latency | `mcping ping alwto.net` |
-| Watch for server online/offline changes | `mcping watch server alwto.net --interval 30` |
-| Get join/leave alerts for one player | `mcping watch player alwto.net D1xP --leave` |
-| Watch joins from any published player | `mcping watch player alwto.net` |
-| Open the live dashboard; refresh every 5 seconds | `mctui alwto.net --interval 5` |
+| Goal                                             | Command                                       |
+| ------------------------------------------------ | --------------------------------------------- |
+| See MOTD, version, players, names, and ping      | `mcping status alwto.net`                     |
+| Measure latency                                  | `mcping ping alwto.net`                       |
+| Watch for server online/offline changes          | `mcping watch server alwto.net --interval 30` |
+| Get join/leave alerts for one player             | `mcping watch player alwto.net D1xP --leave`  |
+| Watch joins from any published player            | `mcping watch player alwto.net`               |
+| Open the live dashboard; refresh every 5 seconds | `mctui alwto.net --interval 5`                |
 
 `watch player` notifies on joins (`--leave` adds leaves); omit the user to
 watch any player. Watch flags: `--interval <secs>` (default 10) and
@@ -87,8 +87,7 @@ watch any player. Watch flags: `--interval <secs>` (default 10) and
 
 ### Addresses
 
-Addresses accept `host`, `host:port` and `[ipv6]:port`. The default port is
-25565.
+Addresses accept `host`, `host:port` and `[ipv6]:port`. The default port is 25565.
 
 ## Watch modes
 
