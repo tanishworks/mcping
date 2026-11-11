@@ -3,6 +3,7 @@ import { AsciiReveal, AsciiSkeleton } from 'ascii-reveal';
 import { useFontsReady } from '../hooks/useFontsReady';
 import { slugify, useScrollSpy } from '../hooks/useScrollSpy';
 import { Markdown } from '../components/Markdown';
+import { SpiderMascot } from '../components/SpiderMascot';
 import docsMd from '../content/docs.md?raw';
 
 interface Heading {
@@ -46,6 +47,7 @@ export function Docs({ open, closeSidebar }: DocsProps) {
   if (!fontsReady) {
     return (
       <main className="docs docs--loading">
+        <SpiderMascot side="left" />
         <div className="hero__skeleton">
           <AsciiSkeleton lines={6} />
         </div>
@@ -55,6 +57,9 @@ export function Docs({ open, closeSidebar }: DocsProps) {
 
   return (
     <div className={`docs${sidebar}`}>
+      {/* ASCII spider in the top-left corner; plays while the fonts (and the
+       * reveal) get ready, then just keeps spinning there. */}
+      <SpiderMascot side="left" />
       {/* Backdrop behind the mobile drawer only; hidden on wide screens. */}
       <div
         className={`docs__scrim${open ? ' is-open' : ''}`}

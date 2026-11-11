@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { AsciiReveal, AsciiSkeleton } from 'ascii-reveal';
 import { Check, Copy } from 'lucide-react';
 import { useFontsReady } from '../hooks/useFontsReady';
+import { SpiderMascot } from '../components/SpiderMascot';
 import iconUrl from '../assets/icon.png';
 
 const REPO_URL = 'https://github.com/tanishworks/mcping';
@@ -77,6 +78,9 @@ export function Home() {
 
   return (
     <main className="home">
+      {/* ASCII spider in the top-right corner; plays while the fonts (and the
+       * hero reveal) get ready, then just keeps spinning there. */}
+      <SpiderMascot />
       {fontsReady ? (
         <section className="hero">
           <AsciiReveal preset="decode" duration="cinematic">

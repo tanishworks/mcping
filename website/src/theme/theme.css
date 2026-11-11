@@ -16,6 +16,7 @@
   --ascii-accent: var(--fg);
   --ascii-skeleton: var(--muted);
   --ascii-glyph: var(--muted);
+  --ascii-mascot: var(--muted);
   --ascii-flash: var(--flash);
   --ascii-font: var(--font-mono);
   --ascii-surface: var(--bg);

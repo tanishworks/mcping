@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Check, Copy } from 'lucide-react';
+import { SpiderMascot } from '../components/SpiderMascot';
 
 // Keep this copy-ready subset in sync with src/content/docs.md → Common tasks.
 const examples = [
@@ -71,6 +72,8 @@ function CopyCommand({ command }: { command: string }) {
 export function About() {
   return (
     <main className="about-page">
+      {/* ASCII spider in the top-right corner, same as the home page. */}
+      <SpiderMascot />
       <header className="about-page__intro">
         <p className="about-page__eyebrow">mcping · quick examples</p>
         <h1 className="about-page__title">Explore mcping</h1>

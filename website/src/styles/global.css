@@ -33,6 +33,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  overflow-x: hidden;
 }
 
 a {
@@ -331,6 +332,48 @@ a {
 /* Home: hero                                                           */
 /* ------------------------------------------------------------------ */
 
+/* Anchor for the mascot's absolute positioning (the ascii-reveal
+ * controller only sets `relative` on static roots; ours is already
+ * positioned, so it stays put). */
+.home {
+  position: relative;
+}
+
+/* -- spider mascot (ascii-reveal) --------------------------------------
+ * An empty element: the controller draws the animated ASCII spider into
+ * its own overlay canvas, sized to this box. The spider drawing hangs from
+ * the box top and scales to min(width*0.78, height*0.95), so the box picks
+ * both its size and hang point. The page root it sits in must be
+ * positioned (home/docs/about each are). */
+.ascii-mascot {
+  position: absolute;
+  top: 0;
+  width: 20rem;
+  height: 32rem;
+  pointer-events: none;
+}
+
+/* Home: dangles from the top of the full-width page, right of the hero. */
+.home .ascii-mascot--right {
+  right: 2.4rem;
+}
+
+/* Explore: same hang, anchored to the 64rem content container — tune it
+ * here without touching the home page. */
+.about-page .ascii-mascot--right {
+  right: -12rem;
+  top: 3.6rem;
+}
+
+/* Docs: hang inside the outline column. Note the current height reaches
+ * past the "on this page" label (7.5rem down), so the lower glyphs paint
+ * behind the outline links (links draw on top). */
+.docs .ascii-mascot--left {
+  left: 1.5rem;
+  width: 15rem;
+  height: 12rem;
+}
+
 .hero {
   display: flex;
   flex-direction: column;
@@ -512,6 +555,8 @@ a {
 /* -- About page ------------------------------------------------------ */
 
 .about-page {
+  /* Anchor for the mascot's absolute positioning. */
+  position: relative;
   max-width: 64rem;
   margin: 0 auto;
   padding: 7.5rem 1.5rem 4rem;
@@ -964,6 +1009,30 @@ a {
 @media (max-width: 959px) {
   body {
     padding-bottom: 4.5rem;
+  }
+
+  /* The bar docks to the bottom edge, so the top corners are free — tuck
+   * the mascots in smaller and higher (one rule per page, tuned apart). */
+  .home .ascii-mascot--right {
+    top: 1rem;
+    right: 1rem;
+    width: 6.5rem;
+    height: 4.25rem;
+  }
+
+  .about-page .ascii-mascot--right {
+    top: 1rem;
+    right: 1rem;
+    width: 6.5rem;
+    height: 4.25rem;
+  }
+
+  /* Docs content starts 4.5rem from the top; keep the hang short and clear
+   * of it. */
+  .docs .ascii-mascot--left {
+    left: 1rem;
+    width: 12rem;
+    height: 4.25rem;
   }
 
   /* The home hero reserves its own bottom-bar clearance. */
