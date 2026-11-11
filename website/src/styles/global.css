@@ -328,31 +328,26 @@ a {
 }
 
 /* ------------------------------------------------------------------ */
-/* Shared sections                                                      */
-/* ------------------------------------------------------------------ */
-
-.section {
-  max-width: 72rem;
-  margin: 0 auto;
-  padding: 2.5rem 1.5rem;
-}
-
-/* ------------------------------------------------------------------ */
 /* Home: hero                                                           */
 /* ------------------------------------------------------------------ */
 
 .hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
   max-width: 72rem;
   margin: 0 auto;
-  padding: 7rem 1.5rem 3rem;
+  padding: clamp(4rem, 8vh, 6rem) 1.5rem;
   text-align: center;
 }
 
 .hero__icon {
   display: block;
-  width: clamp(4.5rem, 9vw, 5.5rem);
+  width: clamp(6rem, 10vw, 7rem);
   height: auto;
-  margin: 0 auto 1.25rem;
+  margin: 0 auto 1.5rem;
 }
 
 .hero__eyebrow {
@@ -366,17 +361,17 @@ a {
 }
 
 .hero__title {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
   font-family: var(--font-pixel);
   font-weight: 400;
-  font-size: clamp(2.2rem, 8vw, 4.6rem);
+  font-size: clamp(2.8rem, 9vw, 5rem);
   line-height: 1.15;
   color: var(--fg);
 }
 
 .hero__tagline {
-  max-width: 34rem;
-  margin: 0 auto 2rem;
+  max-width: 38rem;
+  margin: 0 auto 2.5rem;
   font-size: clamp(1rem, 2vw, 1.15rem);
   line-height: 1.75;
   color: var(--muted);
@@ -459,8 +454,15 @@ a {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.9rem;
-  margin-top: 0;
+  gap: 1rem;
+  width: min(100%, 52rem);
+}
+
+.hero__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
 }
 
 /* Inverted pill link (Releases) — foreground surface, background text. */
@@ -491,108 +493,184 @@ a {
   background: var(--bg);
 }
 
+.btn--secondary {
+  border-color: var(--hairline);
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.btn--secondary:hover {
+  border-color: var(--fg);
+  background: var(--fg);
+  color: var(--bg);
+}
+
 .btn:active {
   transform: scale(0.97);
 }
 
-/* -- feature cards --------------------------------------------------- */
+/* -- About page ------------------------------------------------------ */
 
-/* The ascii-reveal wrapper IS the grid, so the cards are real grid items:
- * horizontally aligned on desktop (auto-fit) and stacked on small screens. */
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15.5rem, 1fr));
-  gap: 1rem;
-  align-items: stretch;
+.about-page {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 7.5rem 1.5rem 4rem;
 }
 
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-  padding: 1.6rem;
-  border: 1px solid var(--hairline);
-  border-radius: 1.1rem;
-  background: var(--bg);
-  box-shadow: 0 14px 34px -26px var(--shadow);
-  transition: border-color 200ms ease;
+.about-page__intro {
+  max-width: 48rem;
+  margin: 0 auto 3.5rem;
+  text-align: center;
 }
 
-.card:hover {
-  border-color: var(--faint);
-}
-
-.card__index {
-  font-family: var(--font-pixel);
-  font-size: 0.6rem;
-  color: var(--faint);
+.about-page__eyebrow {
+  margin-bottom: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
   line-height: 1.6;
 }
 
-.card__title {
-  font-size: 1.05rem;
-  font-weight: 640;
-  letter-spacing: -0.01em;
+.about-page__title {
+  margin-bottom: 1.5rem;
+  font-family: var(--font-pixel);
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: 400;
   line-height: 1.4;
   color: var(--fg);
 }
 
-.card__body {
+.about-page__lead {
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  line-height: 1.75;
+  color: var(--muted);
+}
+
+.about-page__section {
+  margin-top: 3rem;
+}
+
+.about-page__section > h2 {
+  margin-bottom: 1.25rem;
+  font-family: var(--font-pixel);
+  font-size: 0.9rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--fg);
+}
+
+.about-page__section p,
+.about-page__notes {
+  max-width: 58rem;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.about-page code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  color: var(--fg);
+}
+
+.about-page__feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15.5rem, 1fr));
+  gap: 1.5rem;
+}
+
+.about-page__feature {
+  padding-top: 1rem;
+  border-top: 1px solid var(--hairline);
+}
+
+.about-page__feature h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--fg);
+}
+
+.about-page__feature p {
+  font-size: 0.9rem;
+}
+
+.about-page__platforms,
+.about-page__notes {
+  display: grid;
+  gap: 0.65rem;
+  margin: 1.25rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about-page__platforms li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--hairline);
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.about-page__commands {
+  border-top: 1px solid var(--hairline);
+}
+
+.about-page__command {
+  display: grid;
+  grid-template-columns: minmax(16rem, 0.9fr) minmax(0, 1.1fr);
+  gap: 0.5rem 1.5rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.about-page__command dt code {
+  font-size: 0.82rem;
+  overflow-wrap: anywhere;
+}
+
+.about-page__command dd {
   font-size: 0.9rem;
   line-height: 1.7;
   color: var(--muted);
 }
 
-.card__body code {
+.about-page__hint {
+  margin-top: 1.25rem;
+}
+
+.about-page__notes {
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+
+.about-page__release-link {
+  margin-top: 1rem;
+}
+
+.about-page__footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  margin-top: 3.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--hairline);
   font-family: var(--font-mono);
-  font-size: 0.82em;
+  font-size: 0.8rem;
 }
 
-/* -- terminal sample ------------------------------------------------- */
-
-.terminal {
-  padding: 1.1rem 1.25rem;
-  border: 1px solid var(--hairline);
-  border-radius: 0.8rem;
-  background: var(--bg);
-  box-shadow: 0 14px 34px -26px var(--shadow);
-  overflow-x: auto;
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  line-height: 1.9;
-  color: var(--fg);
-}
-
-.terminal__dim {
-  color: var(--muted);
-}
-
-.terminal__prompt {
-  color: var(--faint);
-}
-
-/* ------------------------------------------------------------------ */
-/* Footer                                                               */
-/* ------------------------------------------------------------------ */
-
-.footer {
-  padding: 0 1.5rem 2rem;
-  text-align: center;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.06em;
-  line-height: 1.6;
-  color: var(--faint);
-}
-
-.footer a {
+.about-page__footer a {
   color: var(--muted);
   text-decoration: none;
-  border-bottom: 1px solid var(--hairline);
-  transition: color 150ms ease;
 }
 
-.footer a:hover {
+.about-page__footer a:hover {
   color: var(--fg);
 }
 
@@ -923,6 +1001,11 @@ a {
     padding-bottom: 4.5rem;
   }
 
+  /* The home hero reserves its own bottom-bar clearance. */
+  body:has(.home) {
+    padding-bottom: 0;
+  }
+
   /* The bar docks to the bottom edge (thumb navigation). */
   .site-headroom {
     top: auto;
@@ -976,7 +1059,7 @@ a {
 
 @media (max-width: 640px) {
   .hero {
-    padding: 4.5rem 1.5rem 2rem;
+    padding: 5rem 1.5rem 6.75rem;
   }
 
   .section {
@@ -986,5 +1069,52 @@ a {
   .icon-btn {
     width: 2rem;
     height: 2rem;
+  }
+}
+
+@media (max-width: 40rem) {
+  .about-page {
+    padding: 5.5rem 1rem 7rem;
+  }
+
+  .about-page__intro {
+    margin-bottom: 2.5rem;
+  }
+
+  .about-page__command {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.35rem;
+  }
+}
+
+@media (max-width: 22.5rem) and (max-height: 44rem) {
+  .hero {
+    padding: 3.5rem 1rem 5.5rem;
+  }
+
+  .hero__icon {
+    width: 5rem;
+    margin-bottom: 1rem;
+  }
+
+  .hero__eyebrow,
+  .hero__title {
+    margin-bottom: 1rem;
+  }
+
+  .hero__tagline {
+    margin-bottom: 1.5rem;
+  }
+
+  .install-pill {
+    padding: 0.65rem 0.75rem 0.65rem 1rem;
+  }
+
+  .hero__links {
+    gap: 0.5rem;
+  }
+
+  .btn {
+    padding: 0.5rem 0.9rem;
   }
 }

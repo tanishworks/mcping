@@ -43,7 +43,8 @@ website/src/
 │   ├── GradientBackground.tsx  drifting gradient blobs + noise grain
 │   ├── Markdown.tsx        custom react-markdown components (.md styling)
 ├── pages/
-│   ├── Home.tsx            hero, install pill, feature cards, terminal sample
+│   ├── Home.tsx            viewport-height hero, install pill, Releases/About actions
+│   ├── About.tsx           project overview, install targets, CLI usage, caveats
 │   └── Docs.tsx            sidebar outline + rendered docs.md
 ├── content/docs.md         the actual docs content (rendered on /docs)
 └── styles/global.css       all layout/component CSS

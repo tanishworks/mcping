@@ -36,7 +36,13 @@ export function SiteHeader({ onToggleDocs }: { onToggleDocs?: () => void }) {
 
   const measure = useCallback(() => {
     const item = itemRefs.current[pathname];
-    if (!item || !navRef.current) return;
+    if (!navRef.current) return;
+    if (!item) {
+      setIndicator((current) =>
+        current.ready ? { ...current, ready: false } : current,
+      );
+      return;
+    }
     setIndicator({ x: item.offsetLeft, w: item.offsetWidth, ready: true });
   }, [pathname]);
 
