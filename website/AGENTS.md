@@ -105,13 +105,16 @@ the repo icon links live in their own solid pill at the right edge.
 
 ### Icons (lucide)
 
-UI icons are **lucide-react** (only dependency for iconography): `House` /
-`BookOpen` for the tabs, `Menu` for the docs drawer toggle, `GitBranch` /
-`CircleDot` / `Tag` for the repo links (lucide has no brand icons — do not
-re-add a GitHub mark) and `Copy` / `Check` for the install pill. Pass
+UI icons are **lucide-react** for interface glyphs: `House` / `BookOpen` for
+the tabs, `Menu` for the docs drawer toggle, `CircleDot` / `Tag` for issues
+and releases, and `Copy` / `Check` for the install pill. The repository link
+uses the official GitHub mark from Simple Icons via `components/GitHubMark.tsx`
+(lucide does not include brand marks); it uses `currentColor` to follow the
+theme. Pass
 `size: 16, strokeWidth: 1.6` (shared `iconProps` in `SiteHeader`) to match
 the hairline weight; sizes come from CSS where a component scales them.
-Do not hand-draw new SVG icons — lucide first.
+Do not hand-draw new SVG icons — use Lucide for UI icons and sourced marks
+for brand logos.
 
 ### Docs page `/docs`
 

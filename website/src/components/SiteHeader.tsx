@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BookOpen, CircleDot, GitBranch, House, Menu, Tag } from 'lucide-react';
+import { BookOpen, CircleDot, House, Menu, Tag } from 'lucide-react';
 import { useFontsReady } from '../hooks/useFontsReady';
+import { GitHubMark } from './GitHubMark';
 
 const REPO_URL = 'https://github.com/tanishworks/mcping';
 
@@ -99,7 +100,7 @@ export function SiteHeader({ onToggleDocs }: { onToggleDocs?: () => void }) {
             rel="noreferrer"
             aria-label="GitHub repository"
           >
-            <GitBranch {...iconProps} />
+            <GitHubMark />
           </a>
           <a
             className="icon-btn"
