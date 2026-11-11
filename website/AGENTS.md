@@ -87,25 +87,31 @@ package load hero/cards/docs. Layout rules:
 
 ### Header behavior
 
-Hide/show comes from the in-house `useHideOnScroll` hook (the conventional
-rAF-throttled scroll-direction pattern): scrolling down past 90px hides the
-bar, any upward scroll past 6px tolerance reveals it, and it is always
-visible near the top. The hover reveal zones (top edge ≥ 960px, bottom edge
-below) use the hook's `hold(true)` — the bar is revealed once and *held*
-while the pointer stays in the zone; scrolling may never re-hide it during a
-hover. Each real reveal (mount included) replays the hamburger pop-out;
-hover-holds never do. The pill nav is centered with an animated sliding
-indicator measured from real DOM geometry (re-measure after
-`useFontsReady()` / resize — keep that wiring when touching it).
+The bar is **always visible** — there is no hide-on-scroll behavior, by
+design (keep it simple). `SiteHeader` renders a fixed, click-transparent
+`.site-headroom` wrapper; only its children take pointer events. The pill nav
+is centered with an animated sliding indicator measured from real DOM
+geometry (re-measure after `useFontsReady()` / resize — keep that wiring when
+touching it).
 
 Below **960px** (the same breakpoint where the docs sidebar becomes a
-drawer) the whole bar docks to the **bottom edge** for thumb navigation: the
-reveal zone becomes the bottom edge (`hold(true)` via the pointer zone), the
-unpinned state slides down (`translateY(150%)`), `body`
-gets bottom padding for clearance, and `viewport-fit=cover` +
-`env(safe-area-inset-bottom)` keep it clear of the home indicator. The pill
-itself must keep only its theme background — no extra surfaces/shadows; the
-repo icon links live in their own solid pill at the right edge.
+drawer) the whole bar docks to the **bottom edge** for thumb navigation and
+the tabs become icon-over-label (`lucide-react` icons, 1.1rem, 0.65rem mono
+labels); desktop tabs stay text-only (`padding-block: 0.3rem` keeps the pill
+slim). `body` gets bottom padding for clearance, and `viewport-fit=cover` +
+`env(safe-area-inset-bottom)` keep the bar clear of the home indicator. The
+pill itself must keep only its theme background — no extra surfaces/shadows;
+the repo icon links live in their own solid pill at the right edge.
+
+### Icons (lucide)
+
+UI icons are **lucide-react** (only dependency for iconography): `House` /
+`BookOpen` for the tabs, `Menu` for the docs drawer toggle, `GitBranch` /
+`CircleDot` / `Tag` for the repo links (lucide has no brand icons — do not
+re-add a GitHub mark) and `Copy` / `Check` for the install pill. Pass
+`size: 16, strokeWidth: 1.6` (shared `iconProps` in `SiteHeader`) to match
+the hairline weight; sizes come from CSS where a component scales them.
+Do not hand-draw new SVG icons — lucide first.
 
 ### Docs page `/docs`
 

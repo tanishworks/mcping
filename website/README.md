@@ -39,10 +39,9 @@ website/src/
 │   └── useScrollSpy.ts     docs sidebar scroll-spy + slug/text helpers
 ├── components/
 │   ├── SiteHeader.tsx      pill nav (sliding indicator), menu btn, repo icons;
-│   │                       scroll behavior via useHideOnScroll hook
+│   │                       lucide-react icons, always visible
 │   ├── GradientBackground.tsx  drifting gradient blobs + noise grain
 │   ├── Markdown.tsx        custom react-markdown components (.md styling)
-│   └── Icons.tsx           inline SVG icons (currentColor)
 ├── pages/
 │   ├── Home.tsx            hero, install pill, feature cards, terminal sample
 │   └── Docs.tsx            sidebar outline + rendered docs.md
@@ -90,4 +89,3 @@ The `website` GitHub Actions workflow builds the site on every push to
 (`peaceiris/actions-gh-pages`). To publish manually, run `npm run deploy`
 (build + `gh-pages` push). GitHub Pages must be configured with
 **Source: Deploy from a branch → gh-pages / root**.
-

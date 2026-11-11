@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AsciiReveal, AsciiSkeleton } from 'ascii-reveal';
+import { Check, Copy } from 'lucide-react';
 import { useFontsReady } from '../hooks/useFontsReady';
-import { CheckIcon, CopyIcon } from '../components/Icons';
 import iconUrl from '../assets/icon.png';
 
 const REPO_URL = 'https://github.com/tanishworks/mcping';
@@ -59,7 +59,11 @@ function InstallPill() {
           onClick={copy}
           aria-label={copied ? 'Copied' : 'Copy download command'}
         >
-          {copied ? <CheckIcon /> : <CopyIcon />}
+          {copied ? (
+            <Check size={16} strokeWidth={1.6} aria-hidden />
+          ) : (
+            <Copy size={16} strokeWidth={1.6} aria-hidden />
+          )}
         </button>
       </div>
       <a
