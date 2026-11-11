@@ -460,22 +460,23 @@ a {
   margin-top: 0;
 }
 
-/* Ghost pill link (e.g. Releases) — mono, hairline border, inverts on hover. */
+/* Inverted pill link (Releases) — foreground surface, background text. */
 .btn {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   padding: 0.55rem 1.15rem;
-  border: 1px solid var(--hairline);
+  border: 1px solid var(--fg);
   border-radius: 999px;
-  background: var(--bg);
+  background: var(--fg);
   font-family: var(--font-mono);
   font-size: 0.75rem;
   letter-spacing: 0.04em;
   line-height: 1.6;
-  color: var(--muted);
+  color: var(--bg);
   text-decoration: none;
   transition:
+    background-color 150ms ease,
     color 150ms ease,
     border-color 150ms ease,
     transform 120ms ease;
@@ -483,7 +484,8 @@ a {
 
 .btn:hover {
   color: var(--fg);
-  border-color: var(--faint);
+  border-color: var(--fg);
+  background: var(--bg);
 }
 
 .btn:active {
