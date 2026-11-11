@@ -132,11 +132,9 @@ a {
 /* ------------------------------------------------------------------ */
 /* Fixed header: menu button · centered pill nav · icon links           */
 /*                                                                      */
-/* `useHideOnScroll` (see SiteHeader) toggles the unpinned class on the
- * outer .site-headroom wrapper: visible by default, --unpinned while
- * scrolling down (tucks away), and it drops back from the top on scroll-up
- * via the transform transition. The inner .site-header is normal flow
- * inside the wrapper. */
+/* Always visible — no hide-on-scroll logic (deliberately simple). The
+ * wrapper is fixed and click-transparent except for its interactive
+ * children; below 960px the whole bar docks to the bottom edge. */
 
 .site-headroom {
   position: fixed;
@@ -144,12 +142,7 @@ a {
   left: 0;
   right: 0;
   z-index: 40;
-  transition: transform 280ms cubic-bezier(0.3, 0.9, 0.3, 1);
   pointer-events: none;
-}
-
-.site-headroom--unpinned {
-  transform: translateY(-100%);
 }
 
 .site-header {
@@ -295,15 +288,23 @@ a {
 .pill-nav__link {
   position: relative;
   z-index: 1;
-  padding: 0.5rem 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 1rem;
   border-radius: 999px;
   font-family: var(--font-mono);
   font-size: 0.85rem;
   font-weight: 400;
+  line-height: 1.4;
   color: var(--muted);
   text-decoration: none;
   white-space: nowrap;
   transition: color 200ms ease;
+}
+
+/* Desktop tabs are text-only; the icon only shows in the mobile tab bar. */
+.pill-nav__icon {
+  display: none;
 }
 
 .pill-nav__link:hover {
@@ -887,7 +888,6 @@ a {
     animation: none;
   }
 
-  .site-headroom,
   .docs__sidebar,
   .pill-nav__indicator {
     transition: none;
@@ -903,23 +903,17 @@ a {
 /* ------------------------------------------------------------------ */
 
 /* Thumb navigation: below the docs-drawer breakpoint the whole bar docks
- * to the bottom of the screen. The pill stays centered, the hamburger keeps
- * popping out of it, and the reveal zone moves to the bottom edge (see
- * SiteHeader). Content clears the bar via body padding. */
+ * to the bottom of the screen and the tabs grow their lucide icons (icon
+ * over label, tab-bar style). Content clears the bar via body padding. */
 @media (max-width: 959px) {
   body {
     padding-bottom: 4.5rem;
   }
 
-  /* The headroom wrapper docks to the bottom edge (thumb navigation). */
+  /* The bar docks to the bottom edge (thumb navigation). */
   .site-headroom {
     top: auto;
     bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
-  }
-
-  /* Hidden state slides off the bottom edge instead of the top one. */
-  .site-headroom--unpinned {
-    transform: translateY(150%);
   }
 
   .site-header {
@@ -928,6 +922,20 @@ a {
 
   .site-header__side--right {
     gap: 0.35rem;
+  }
+
+  /* Mobile tabs: icon over label, like a conventional bottom tab bar. */
+  .pill-nav__link {
+    flex-direction: column;
+    gap: 0.2rem;
+    font-size: 0.65rem;
+    line-height: 1.6;
+  }
+
+  .pill-nav__icon {
+    display: block;
+    width: 1.1rem;
+    height: 1.1rem;
   }
 }
 

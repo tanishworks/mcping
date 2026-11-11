@@ -1,25 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { BookOpen, CircleDot, GitBranch, House, Menu, Tag } from 'lucide-react';
 import { useFontsReady } from '../hooks/useFontsReady';
-import { useHideOnScroll } from '../hooks/useHideOnScroll';
-import { GitHubIcon, IssueIcon, MenuIcon, ReleasesIcon } from './Icons';
 
 const REPO_URL = 'https://github.com/tanishworks/mcping';
 
+/* Shared lucide props: 16px box, 1.6 stroke to match the hairline weight. */
+const iconProps = { size: 16, strokeWidth: 1.6, 'aria-hidden': true } as const;
+
 const links = [
-  { to: '/', label: 'home' },
-  { to: '/docs', label: 'docs' },
+  { to: '/', label: 'home', icon: House },
+  { to: '/docs', label: 'docs', icon: BookOpen },
 ];
-
-/* Hide/show tuning: the bar may only hide once the page is scrolled past
- * `threshold` px, and `tolerance` px of sub-threshold jitter never flips it. */
-const HIDE_THRESHOLD_PX = 90;
-const HIDE_TOLERANCE_PX = 6;
-
-/* Same breakpoint as the docs-drawer CSS: below it the bar docks to the
- * bottom edge, so the hover/reveal zone is the bottom edge. */
-const BOTTOM_BAR_QUERY = '(max-width: 959px)';
-const HOVER_ZONE_PX = 72;
 
 /**
  * Fixed header: a centered pill nav; on /docs the hamburger pops out of the
@@ -28,21 +20,13 @@ const HOVER_ZONE_PX = 72;
  * and screen position whether the button is there or not. Repo links sit in
  * a solid pill at the right edge.
  *
- * The bar itself is hidden/shown by `useHideOnScroll` (rAF-throttled scroll
- * direction + hover-zone hold); the wrapper's class flips between the base
- * class and `site-headroom--unpinned`. Every real reveal — initial mount
- * included — replays the hamburger pop-out; hover-holds never do.
+ * The bar is always visible — no hide-on-scroll logic, deliberately simple.
+ * Desktop tabs are text-only; below 960px (the docs-drawer breakpoint) the
+ * bar docks to the bottom edge and the tabs become icon + label.
  */
 export function SiteHeader({ onToggleDocs }: { onToggleDocs?: () => void }) {
   const fontsReady = useFontsReady();
   const { pathname } = useLocation();
-  const { hidden, hold } = useHideOnScroll({
-    threshold: HIDE_THRESHOLD_PX,
-    tolerance: HIDE_TOLERANCE_PX,
-  });
-
-  // Outer bar wrapper.
-  const barRef = useRef<HTMLDivElement | null>(null);
 
   // Sliding indicator geometry.
   const navRef = useRef<HTMLElement | null>(null);
@@ -66,49 +50,19 @@ export function SiteHeader({ onToggleDocs }: { onToggleDocs?: () => void }) {
     return () => window.removeEventListener('resize', measure);
   }, [measure]);
 
-  // Hamburger pop-out replay: each real reveal (hidden → visible) pops it.
-  // Adjusting during render (the documented derived-state pattern) keeps
-  // effects free of setState; the initial mount pop comes from the JSX's
-  // `is-popping` class, so only later transitions bump the key here.
-  const [popKey, setPopKey] = useState(0);
-  const [prevHidden, setPrevHidden] = useState(hidden);
-  if (prevHidden !== hidden) {
-    setPrevHidden(hidden);
-    if (!hidden) setPopKey((key) => key + 1);
-  }
-
-  // Pointer reveal zones: top edge on the top bar, bottom edge on the
-  // bottom-docked (narrow-viewport) bar. Inside the zone the bar is revealed
-  // once and *held* visible — scrolling can't re-hide it while hovering.
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      const bottomBar = window.matchMedia(BOTTOM_BAR_QUERY).matches;
-      const inZone = bottomBar
-        ? e.clientY >= window.innerHeight - HOVER_ZONE_PX
-        : e.clientY <= HOVER_ZONE_PX;
-      hold(inZone);
-    };
-    window.addEventListener('mousemove', onMove, { passive: true });
-    return () => window.removeEventListener('mousemove', onMove);
-  }, [hold]);
-
   return (
-    <div
-      ref={barRef}
-      className={`site-headroom${hidden ? ' site-headroom--unpinned' : ''}`}
-    >
+    <div className="site-headroom">
       <header className="site-header">
         <div className="nav-cluster">
           {onToggleDocs && (
             <button
-              key={popKey}
               type="button"
               className="icon-btn menu-btn is-popping"
               aria-label="Toggle docs navigation"
               aria-haspopup="true"
               onClick={onToggleDocs}
             >
-              <MenuIcon />
+              <Menu {...iconProps} />
             </button>
           )}
 
@@ -121,16 +75,17 @@ export function SiteHeader({ onToggleDocs }: { onToggleDocs?: () => void }) {
                 opacity: indicator.ready ? 1 : 0,
               }}
             />
-            {links.map((link) => (
+            {links.map(({ to, label, icon: Icon }) => (
               <Link
-                key={link.to}
+                key={to}
                 ref={(el: HTMLAnchorElement | null) => {
-                  itemRefs.current[link.to] = el;
+                  itemRefs.current[to] = el;
                 }}
-                to={link.to}
-                className={`pill-nav__link${pathname === link.to ? ' is-active' : ''}`}
+                to={to}
+                className={`pill-nav__link${pathname === to ? ' is-active' : ''}`}
               >
-                {link.label}
+                <Icon className="pill-nav__icon" {...iconProps} />
+                <span className="pill-nav__label">{label}</span>
               </Link>
             ))}
           </nav>
@@ -144,7 +99,7 @@ export function SiteHeader({ onToggleDocs }: { onToggleDocs?: () => void }) {
             rel="noreferrer"
             aria-label="GitHub repository"
           >
-            <GitHubIcon />
+            <GitBranch {...iconProps} />
           </a>
           <a
             className="icon-btn"
@@ -153,7 +108,7 @@ export function SiteHeader({ onToggleDocs }: { onToggleDocs?: () => void }) {
             rel="noreferrer"
             aria-label="Issues"
           >
-            <IssueIcon />
+            <CircleDot {...iconProps} />
           </a>
           <a
             className="icon-btn"
@@ -162,7 +117,7 @@ export function SiteHeader({ onToggleDocs }: { onToggleDocs?: () => void }) {
             rel="noreferrer"
             aria-label="Releases"
           >
-            <ReleasesIcon />
+            <Tag {...iconProps} />
           </a>
         </div>
       </header>
