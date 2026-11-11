@@ -109,9 +109,12 @@ solid pill at the right edge.
 
 The home page is a centered, viewport-height landing hero only: keep the app
 icon, title, summary, install command, and adjacent Releases/About actions.
-Do not add content beneath the actions. The About page is the longer project
-overview and usage guide; keep its commands, platform targets, watch flags,
-and caveats aligned with `src/content/docs.md` and the root README.
+Do not add content beneath the actions. About/Explore is a concise, copy-ready
+quick-use page for people who already installed the binaries: show a handful
+of tasks, each with a pasteable example command and a copy button; do not
+repeat installation instructions or long feature explanations. The command
+examples and behavior in `src/content/docs.md` remain canonical; keep the
+About examples in sync with its “Common tasks” section.
 
 ### Icons (lucide)
 

@@ -519,7 +519,7 @@ a {
 
 .about-page__intro {
   max-width: 48rem;
-  margin: 0 auto 3.5rem;
+  margin: 0 auto 2.5rem;
   text-align: center;
 }
 
@@ -548,45 +548,27 @@ a {
   color: var(--muted);
 }
 
-.about-page__section {
-  margin-top: 3rem;
-}
-
-.about-page__section > h2 {
-  margin-bottom: 1.25rem;
-  font-family: var(--font-pixel);
-  font-size: 0.9rem;
-  font-weight: 400;
-  line-height: 1.6;
-  color: var(--fg);
-}
-
-.about-page__section p,
-.about-page__notes {
-  max-width: 58rem;
-  font-size: 0.95rem;
-  line-height: 1.7;
-  color: var(--muted);
-}
-
 .about-page code {
   font-family: var(--font-mono);
   font-size: 0.88em;
   color: var(--fg);
 }
 
-.about-page__feature-grid {
+.about-page__examples {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15.5rem, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: 1rem;
 }
 
-.about-page__feature {
-  padding-top: 1rem;
-  border-top: 1px solid var(--hairline);
+.about-page__example {
+  min-width: 0;
+  padding: 1.1rem;
+  border: 1px solid var(--hairline);
+  border-radius: 0.9rem;
+  background: var(--bg);
 }
 
-.about-page__feature h3 {
+.about-page__example h2 {
   margin-bottom: 0.5rem;
   font-size: 1rem;
   font-weight: 600;
@@ -594,84 +576,67 @@ a {
   color: var(--fg);
 }
 
-.about-page__feature p {
+.about-page__example p {
+  min-height: 3.2em;
+  margin-bottom: 0.9rem;
   font-size: 0.9rem;
-}
-
-.about-page__platforms,
-.about-page__notes {
-  display: grid;
-  gap: 0.65rem;
-  margin: 1.25rem 0;
-  padding: 0;
-  list-style: none;
-}
-
-.about-page__platforms li {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 0.25rem 1rem;
-  padding: 0.65rem 0;
-  border-bottom: 1px solid var(--hairline);
-  font-size: 0.9rem;
+  line-height: 1.6;
   color: var(--muted);
-}
-
-.about-page__commands {
-  border-top: 1px solid var(--hairline);
 }
 
 .about-page__command {
-  display: grid;
-  grid-template-columns: minmax(16rem, 0.9fr) minmax(0, 1.1fr);
-  gap: 0.5rem 1.5rem;
-  padding: 1rem 0;
-  border-bottom: 1px solid var(--hairline);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0.35rem 0.4rem 0.35rem 0.75rem;
+  border: 1px solid var(--hairline);
+  border-radius: 0.65rem;
+  background: var(--bg);
 }
 
-.about-page__command dt code {
-  font-size: 0.82rem;
-  overflow-wrap: anywhere;
-}
-
-.about-page__command dd {
-  font-size: 0.9rem;
+.about-page__command code {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  font-size: 0.72rem;
   line-height: 1.7;
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+
+.about-page__command code::-webkit-scrollbar {
+  display: none;
+}
+
+.about-page__copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  background: var(--bg);
   color: var(--muted);
+  cursor: pointer;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+.about-page__copy:hover {
+  border-color: var(--fg);
+  color: var(--fg);
 }
 
 .about-page__hint {
-  margin-top: 1.25rem;
-}
-
-.about-page__notes {
-  padding-left: 1.25rem;
-  list-style: disc;
-}
-
-.about-page__release-link {
-  margin-top: 1rem;
-}
-
-.about-page__footer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem 1.5rem;
-  margin-top: 3.5rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--hairline);
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-}
-
-.about-page__footer a {
+  max-width: 52rem;
+  margin: 1.5rem auto 0;
+  text-align: center;
+  font-size: 0.85rem;
+  line-height: 1.7;
   color: var(--muted);
-  text-decoration: none;
-}
-
-.about-page__footer a:hover {
-  color: var(--fg);
 }
 
 /* ------------------------------------------------------------------ */
@@ -1078,12 +1043,7 @@ a {
   }
 
   .about-page__intro {
-    margin-bottom: 2.5rem;
-  }
-
-  .about-page__command {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.35rem;
+    margin-bottom: 2rem;
   }
 }
 
