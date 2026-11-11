@@ -248,11 +248,14 @@ a {
 /* Hamburger: rests just left of the pill, absolutely positioned so the pill
  * never moves. Starts behind the pill (translateX + z-index 0 under the
  * pill's z-index 1) and springs out to its resting spot. */
-.menu-btn {
+.site-header .menu-btn {
   position: absolute;
-  top: 50%;
+  top: 0;
+  bottom: 0;
   right: calc(100% + 0.5rem);
-  margin-top: -1.125rem; /* half of the 2.25rem button */
+  width: var(--header-control-height);
+  height: var(--header-control-height);
+  margin-block: auto;
   z-index: 0;
 }
 
@@ -301,7 +304,7 @@ a {
   padding: 0.25rem 1rem;
   border-radius: 999px;
   font-family: var(--font-mono);
-  font-size: 0.85rem;
+  font-size: 0.96rem;
   font-weight: 400;
   line-height: 1.4;
   color: var(--muted);
@@ -933,21 +936,41 @@ a {
   }
 
   .site-header__side--right {
+    align-self: end;
     gap: 0.35rem;
+    height: 2.75rem;
+  }
+
+  /* Bottom-align the shorter hamburger with the mobile nav and repo pill. */
+  .site-header .menu-btn {
+    position: fixed;
+    top: auto;
+    right: auto;
+    bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+    left: 1rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin: 0;
   }
 
   /* Mobile tabs: icon over label, like a conventional bottom tab bar. */
   .pill-nav__link {
     flex-direction: column;
     gap: 0.2rem;
-    font-size: 0.65rem;
-    line-height: 1.6;
+    font-size: 0.72rem;
+    line-height: 1;
+    padding: 0.40rem 1.6rem;
   }
 
   .pill-nav__icon {
     display: block;
-    width: 1.1rem;
-    height: 1.1rem;
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
+  .site-header .menu-btn svg {
+    width: 1.2rem;
+    height: 1.2rem;
   }
 }
 
@@ -963,9 +986,5 @@ a {
   .icon-btn {
     width: 2rem;
     height: 2rem;
-  }
-
-  .pill-nav__link {
-    padding: 0.4rem 0.9rem;
   }
 }
