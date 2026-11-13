@@ -12,21 +12,24 @@ import { createAsciiReveal } from 'ascii-reveal/core';
  * draws for those users.
  */
 export function SpiderMascot({ side = 'right' }: { side?: 'left' | 'right' }) {
-  const ref = useRef<HTMLDivElement | null>(null);
+    const ref = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const ctrl = createAsciiReveal(el, { mascot: 'spider', preset: 'decode' });
-    ctrl.shimmer(true);
-    return () => ctrl.destroy();
-  }, []);
+    useEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+        const ctrl = createAsciiReveal(el, {
+            mascot: 'spider',
+            preset: 'decode',
+        });
+        ctrl.shimmer(true);
+        return () => ctrl.destroy();
+    }, []);
 
-  return (
-    <div
-      ref={ref}
-      className={`ascii-mascot ascii-mascot--${side}`}
-      aria-hidden="true"
-    />
-  );
+    return (
+        <div
+            ref={ref}
+            className={`ascii-mascot ascii-mascot--${side}`}
+            aria-hidden="true"
+        />
+    );
 }

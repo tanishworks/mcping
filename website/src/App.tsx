@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react';
-import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import {
+    BrowserRouter,
+    Navigate,
+    Route,
+    Routes,
+    useLocation,
+} from 'react-router-dom';
 import { ThemeProvider } from './theme/theme';
 import { GradientBackground } from './components/GradientBackground';
 import { SiteHeader } from './components/SiteHeader';
@@ -24,8 +30,8 @@ function Shell() {
     // Docs sidebar state: visible by default on wide screens, hidden (drawer)
     // by default on mobile. The header's menu button toggles it. `Docs` mounts
     // fresh on every route change, so this initial value also resets per page.
-    const [sidebarOpen, setSidebarOpen] = useState(() =>
-        window.matchMedia(WIDE_VIEWPORT).matches,
+    const [sidebarOpen, setSidebarOpen] = useState(
+        () => window.matchMedia(WIDE_VIEWPORT).matches,
     );
 
     useEffect(() => {
@@ -39,7 +45,9 @@ function Shell() {
         <>
             <GradientBackground />
             <SiteHeader
-                onToggleDocs={onDocs ? () => setSidebarOpen((open) => !open) : undefined}
+                onToggleDocs={
+                    onDocs ? () => setSidebarOpen((open) => !open) : undefined
+                }
             />
             <Routes>
                 <Route path="/" element={<Home />} />

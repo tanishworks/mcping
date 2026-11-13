@@ -7,24 +7,24 @@ import { useEffect, useState } from 'react';
  * reflows it into the real one.
  */
 export function useFontsReady(): boolean {
-  const [ready, setReady] = useState(false);
+    const [ready, setReady] = useState(false);
 
-  useEffect(() => {
-    let alive = true;
-    const wanted = [
-      '16px Inter',
-      '16px "JetBrains Mono"',
-      '16px "Press Start 2P"',
-    ];
-    Promise.all(wanted.map((spec) => document.fonts.load(spec)))
-      .then(() => document.fonts.ready)
-      .then(() => {
-        if (alive) setReady(true);
-      });
-    return () => {
-      alive = false;
-    };
-  }, []);
+    useEffect(() => {
+        let alive = true;
+        const wanted = [
+            '16px Inter',
+            '16px "JetBrains Mono"',
+            '16px "Press Start 2P"',
+        ];
+        Promise.all(wanted.map((spec) => document.fonts.load(spec)))
+            .then(() => document.fonts.ready)
+            .then(() => {
+                if (alive) setReady(true);
+            });
+        return () => {
+            alive = false;
+        };
+    }, []);
 
-  return ready;
+    return ready;
 }

@@ -151,7 +151,8 @@ for brand logos.
 
 ## Nice to keep
 
-- `npm run build` must pass (it runs `tsc -b`) — also run `npm run lint`.
+- `npm run build` must pass (it runs `tsc -b`) — also run `npm run lint`
+  and `npm run format:check` (Prettier, 4-space indent; CI enforces it).
 - No new runtime dependencies without a reason; ascii-reveal, react-markdown,
   react-router-dom are already there.
 - Conventional commits (`feat(website): …`, `fix(website): …`) on a feature

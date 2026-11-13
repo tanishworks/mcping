@@ -5,21 +5,21 @@
  */
 
 :root {
-  /* Typography — pixel font for display, mono for terminal/nav, Inter for prose */
-  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
-  --font-pixel: 'Press Start 2P', var(--font-mono);
+    /* Typography — pixel font for display, mono for terminal/nav, Inter for prose */
+    --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --font-pixel: 'Press Start 2P', var(--font-mono);
 }
 
 /* ascii-reveal theming: the effect reads these custom properties. */
 :root {
-  --ascii-accent: var(--fg);
-  --ascii-skeleton: var(--muted);
-  --ascii-glyph: var(--muted);
-  --ascii-mascot: var(--muted);
-  --ascii-flash: var(--flash);
-  --ascii-font: var(--font-mono);
-  --ascii-surface: var(--bg);
+    --ascii-accent: var(--fg);
+    --ascii-skeleton: var(--muted);
+    --ascii-glyph: var(--muted);
+    --ascii-mascot: var(--muted);
+    --ascii-flash: var(--flash);
+    --ascii-font: var(--font-mono);
+    --ascii-surface: var(--bg);
 }
 
 /*
@@ -28,35 +28,35 @@
  * inline script in index.html picks the right one before first paint.
  */
 :root {
-  --bg: #ffffff;
-  --fg: #000000;
-  --muted: #5e5e5e;
-  --faint: #9c9c9c;
-  --hairline: rgba(0, 0, 0, 0.14);
-  --hover: rgba(0, 0, 0, 0.05);
-  --gradient-a: #e7e7e7;
-  --gradient-b: #f2f2f2;
-  --gradient-c: #d6d6d6;
-  --noise: 0.045;
-  --shadow: rgba(0, 0, 0, 0.08);
-  --scrim: rgba(0, 0, 0, 0.4);
-  --flash: #ffffff;
-  color-scheme: light;
+    --bg: #ffffff;
+    --fg: #000000;
+    --muted: #5e5e5e;
+    --faint: #9c9c9c;
+    --hairline: rgba(0, 0, 0, 0.14);
+    --hover: rgba(0, 0, 0, 0.05);
+    --gradient-a: #e7e7e7;
+    --gradient-b: #f2f2f2;
+    --gradient-c: #d6d6d6;
+    --noise: 0.045;
+    --shadow: rgba(0, 0, 0, 0.08);
+    --scrim: rgba(0, 0, 0, 0.4);
+    --flash: #ffffff;
+    color-scheme: light;
 }
 
-:root[data-theme="dark"] {
-  --bg: #000000;
-  --fg: #ffffff;
-  --muted: #a1a1a1;
-  --faint: #575757;
-  --hairline: rgba(255, 255, 255, 0.16);
-  --hover: rgba(255, 255, 255, 0.07);
-  --gradient-a: #161616;
-  --gradient-b: #212121;
-  --gradient-c: #2b2b2b;
-  --noise: 0.08;
-  --shadow: rgba(0, 0, 0, 0.6);
-  --scrim: rgba(0, 0, 0, 0.7);
-  --flash: #0d0d0d;
-  color-scheme: dark;
+:root[data-theme='dark'] {
+    --bg: #000000;
+    --fg: #ffffff;
+    --muted: #a1a1a1;
+    --faint: #575757;
+    --hairline: rgba(255, 255, 255, 0.16);
+    --hover: rgba(255, 255, 255, 0.07);
+    --gradient-a: #161616;
+    --gradient-b: #212121;
+    --gradient-c: #2b2b2b;
+    --noise: 0.08;
+    --shadow: rgba(0, 0, 0, 0.6);
+    --scrim: rgba(0, 0, 0, 0.7);
+    --flash: #0d0d0d;
+    color-scheme: dark;
 }

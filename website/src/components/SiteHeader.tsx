@@ -74,7 +74,12 @@ export function SiteHeader({ onToggleDocs }: { onToggleDocs?: () => void }) {
                         </button>
                     )}
 
-                    <nav className="pill-nav" aria-label="Primary" ref={navRef} data-ascii="skip">
+                    <nav
+                        className="pill-nav"
+                        aria-label="Primary"
+                        ref={navRef}
+                        data-ascii="skip"
+                    >
                         <span
                             className="pill-nav__indicator"
                             style={{
@@ -92,7 +97,10 @@ export function SiteHeader({ onToggleDocs }: { onToggleDocs?: () => void }) {
                                 to={to}
                                 className={`pill-nav__link${pathname === to ? ' is-active' : ''}`}
                             >
-                                <Icon className="pill-nav__icon" {...iconProps} />
+                                <Icon
+                                    className="pill-nav__icon"
+                                    {...iconProps}
+                                />
                                 <span className="pill-nav__label">{label}</span>
                             </Link>
                         ))}
