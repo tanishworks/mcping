@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { AsciiReveal, AsciiSkeleton } from 'ascii-reveal';
 import { Check, Copy } from 'lucide-react';
+import { useFontsReady } from '../hooks/useFontsReady';
 import { SpiderMascot } from '../components/SpiderMascot';
 
 // Keep this copy-ready subset in sync with src/content/docs.md → Common tasks.
@@ -54,7 +56,7 @@ function CopyCommand({ command }: { command: string }) {
   };
 
   return (
-    <div className="about-page__command">
+    <div className="about-page__command" data-ascii="fade">
       <code>{command}</code>
       <button
         type="button"
@@ -70,37 +72,65 @@ function CopyCommand({ command }: { command: string }) {
 }
 
 export function About() {
+  // Same gate as the home and docs pages: ascii-reveal must decode text in
+  // its final typeface, so wait for the local fonts before rendering.
+  const fontsReady = useFontsReady();
+
+  if (!fontsReady) {
+    return (
+      <main className="about-page">
+        <SpiderMascot />
+        <div className="hero__skeleton">
+          <AsciiSkeleton lines={6} />
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="about-page">
       {/* ASCII spider in the top-right corner, same as the home page. */}
       <SpiderMascot />
       <header className="about-page__intro">
-        <p className="about-page__eyebrow">mcping · quick examples</p>
-        <h1 className="about-page__title">Explore mcping</h1>
-        <p className="about-page__lead">
-          Already installed? Choose what you want to do, copy the command, and
-          paste it into your terminal. These examples use <code>alwto.net</code>;
-          replace it with your server address.
-        </p>
+        <AsciiReveal preset="decode" duration="cinematic">
+          <p className="about-page__eyebrow" data-ascii="fade">mcping · quick examples</p>
+          <h1 className="about-page__title">Explore mcping</h1>
+        </AsciiReveal>
+        <AsciiReveal preset="decode">
+          <p className="about-page__lead" data-ascii="fade">
+            Already installed? Choose what you want to do, copy the command, and
+            paste it into your terminal. These examples use <code>alwto.net</code>;
+            replace it with your server address.
+          </p>
+        </AsciiReveal>
       </header>
 
-      <section className="about-page__examples" aria-label="Common tasks">
+      {/* The reveal wrapper IS the card grid — a section on top of it would
+        * become the only grid child and the cards would stack vertically. */}
+      <AsciiReveal
+        preset="decode"
+        as="section"
+        className="about-page__examples"
+        aria-label="Common tasks"
+      >
         {examples.map(({ title, description, command }) => (
-          <article className="about-page__example" key={command}>
+          <article className="about-page__example" key={command} data-ascii="surface">
             <h2>{title}</h2>
             <p>{description}</p>
             <CopyCommand command={command} />
           </article>
         ))}
-      </section>
+      </AsciiReveal>
 
-      <p className="about-page__hint">
-        Use <code>host:port</code> for a custom port (default <code>25565</code>).
-        Watch commands poll every 10 seconds by default; use{' '}
-        <code>--interval &lt;seconds&gt;</code> to change it. Player names depend
-        on what the server publishes. See <Link to="/docs">docs</Link> for
-        installation, all options, and full details.
-      </p>
+      <AsciiReveal preset="decode">
+        <p className="about-page__hint" data-ascii="fade">
+          Use <code>host:port</code> for a custom port (default <code>25565</code>).
+          Watch commands poll every 10 seconds by default; use{' '}
+          <code>--interval &lt;seconds&gt;</code> to change it. Player names depend
+          on what the server publishes. See <Link to="/docs">docs</Link> for
+          installation, all options, and full details.
+        </p>
+      </AsciiReveal>
     </main>
   );
 }

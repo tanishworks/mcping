@@ -85,7 +85,7 @@ width/height attributes (no CLS).
 ### ascii-reveal
 
 Reveal effects (`AsciiReveal`, `AsciiSkeleton`) from the `ascii-reveal` npm
-package load the home hero and docs page. The About page is static. Layout
+package load the home hero, the About/Explore page and the docs page. Layout
 rules:
 
 - Reveals must start only after fonts are ready (`useFontsReady()` /
