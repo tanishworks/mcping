@@ -68,7 +68,7 @@ function InstallPill() {
                     to="/about"
                     data-ascii="fade"
                 >
-                    about mcping
+                    how to use?
                 </Link>
             </div>
         </AsciiReveal>
